@@ -1,0 +1,499 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}
+Medicare | Add Appointment
+{% endblock %}
+
+{% block page_title %}
+Add Appointment
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .appointment-page {
+        padding: 5px 0 25px;
+        max-width: 1250px;
+    }
+
+    .topbar {
+        margin-bottom: 25px;
+    }
+
+    .topbar h2 {
+        font-size: 26px;
+        color: #23463d;
+        margin-bottom: 5px;
+    }
+
+    .topbar p {
+        color: #71857f;
+        font-size: 14px;
+    }
+
+    .message {
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        background: #fdeaea;
+        color: #b74747;
+        border: 1px solid #f1c7c7;
+        font-size: 14px;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 4px 20px rgba(0, 70, 55, 0.07);
+    }
+
+    .section {
+        margin-bottom: 30px;
+    }
+
+    .section:last-child {
+        margin-bottom: 5px;
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #087f68;
+        font-size: 17px;
+        font-weight: 600;
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #e4eeeb;
+    }
+
+    .section-number {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #e1f3ec;
+        color: #087f68;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        color: #49645b;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .required {
+        color: #d65b5b;
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #d3e4df;
+        border-radius: 8px;
+        outline: none;
+        font-size: 14px;
+        color: #365850;
+        background: #fff;
+        transition: 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #087f68;
+        box-shadow: 0 0 0 3px rgba(8, 127, 104, 0.08);
+    }
+
+    textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .help-text {
+        color: #82958f;
+        font-size: 11px;
+        margin-top: 5px;
+    }
+
+    .button-area {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 10px;
+        padding-top: 22px;
+        border-top: 1px solid #e4eeeb;
+    }
+
+    .btn {
+        text-decoration: none;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .cancel-btn {
+        background: #edf4f1;
+        color: #47655d;
+    }
+
+    .cancel-btn:hover {
+        background: #e1ebe7;
+    }
+
+    .save-btn {
+        background: #087f68;
+        color: white;
+    }
+
+    .save-btn:hover {
+        background: #066b58;
+    }
+
+    @media (max-width: 850px) {
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full {
+            grid-column: auto;
+        }
+
+        .form-card {
+            padding: 22px;
+        }
+    }
+
+    @media (max-width: 600px) {
+
+        .button-area {
+            flex-direction: column;
+        }
+
+        .btn {
+            text-align: center;
+            width: 100%;
+        }
+    }
+</style>
+
+
+<div class="appointment-page">
+
+    <!-- PAGE HEADER -->
+
+    <div class="topbar">
+
+        <h2>
+            Add Appointment
+        </h2>
+
+        <p>
+            Schedule a new patient appointment
+        </p>
+
+    </div>
+
+
+    <!-- MESSAGES -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="message">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- FORM -->
+
+    <div class="form-card">
+
+        <form method="post">
+
+            {% csrf_token %}
+
+
+            <!-- PATIENT & DOCTOR -->
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <span class="section-number">
+                        1
+                    </span>
+
+                    Patient & Doctor
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- PATIENT -->
+
+                    <div class="form-group">
+
+                        <label for="patient">
+
+                            Patient
+                            <span class="required">*</span>
+
+                        </label>
+
+
+                        <select
+                            id="patient"
+                            name="patient"
+                            required
+                        >
+
+                            <option value="">
+                                Select Patient
+                            </option>
+
+
+                            {% for patient in patients %}
+
+                                <option
+                                    value="{{ patient.id }}"
+                                    {% if request.POST.patient == patient.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+
+                                    {{ patient.user.get_full_name|default:patient.user.username }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DOCTOR -->
+
+                    <div class="form-group">
+
+                        <label for="doctor">
+
+                            Doctor
+                            <span class="required">*</span>
+
+                        </label>
+
+
+                        <select
+                            id="doctor"
+                            name="doctor"
+                            required
+                        >
+
+                            <option value="">
+                                Select Doctor
+                            </option>
+
+
+                            {% for doctor in doctors %}
+
+                                <option
+                                    value="{{ doctor.id }}"
+                                    {% if request.POST.doctor == doctor.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+
+                                    Dr.
+                                    {{ doctor.user.get_full_name|default:doctor.user.username }}
+
+                                    — {{ doctor.get_specialization_display }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+
+                        <span class="help-text">
+
+                            Only currently available doctors are shown.
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DATE & TIME -->
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <span class="section-number">
+                        2
+                    </span>
+
+                    Appointment Schedule
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- DATE -->
+
+                    <div class="form-group">
+
+                        <label for="appointment_date">
+
+                            Appointment Date
+                            <span class="required">*</span>
+
+                        </label>
+
+
+                        <input
+                            type="date"
+                            id="appointment_date"
+                            name="appointment_date"
+                            value="{{ request.POST.appointment_date }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- TIME -->
+
+                    <div class="form-group">
+
+                        <label for="appointment_time">
+
+                            Appointment Time
+                            <span class="required">*</span>
+
+                        </label>
+
+
+                        <input
+                            type="time"
+                            id="appointment_time"
+                            name="appointment_time"
+                            value="{{ request.POST.appointment_time }}"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- REASON -->
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    <span class="section-number">
+                        3
+                    </span>
+
+                    Appointment Details
+
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group full">
+
+                        <label for="reason">
+                            Reason for Visit
+                        </label>
+
+
+                        <textarea
+                            id="reason"
+                            name="reason"
+                            placeholder="Enter the reason for the appointment..."
+                        >{{ request.POST.reason }}</textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="button-area">
+
+                <a
+                    href="{% url 'appointment_list' %}"
+                    class="btn cancel-btn"
+                >
+                    Cancel
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="btn save-btn"
+                >
+                    Schedule Appointment
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Medicare | Pending Approvals</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8f6;
+            color: #26352e;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .header h1 {
+            color: #2f6f52;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6b756f;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 18px;
+            background: #eef5f1;
+            color: #2f6f52;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            background: #dcebe3;
+        }
+
+        .message {
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: #e8f5ed;
+            color: #27613f;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #edf5f0;
+            color: #2f6f52;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #edf0ee;
+            color: #4c5751;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #fafcfb;
+        }
+
+        .role {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #eef5f1;
+            color: #2f6f52;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .pending {
+            color: #b7791f;
+            font-weight: bold;
+        }
+
+        .approve-button {
+            display: inline-block;
+            padding: 9px 16px;
+            background: #2f7d55;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .approve-button:hover {
+            background: #256644;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #7a837e;
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 700px) {
+
+            .container {
+                width: 95%;
+                margin: 20px auto;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .table-container {
+                padding: 15px;
+            }
+
+            th,
+            td {
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .approve-button {
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>Pending Approvals</h1>
+
+        <p>
+            Review and approve newly registered patients, doctors and receptionists.
+        </p>
+
+        <a href="{% url 'admin_dashboard' %}" class="back-button">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="message">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <div class="table-container">
+
+        {% if pending_profiles %}
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Registered On</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for profile in pending_profiles %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ profile.user.get_full_name|default:profile.user.username }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ profile.user.username }}
+                            </td>
+
+                            <td>
+                                {{ profile.user.email|default:"-" }}
+                            </td>
+
+                            <td>
+                                {{ profile.phone|default:"-" }}
+                            </td>
+
+                            <td>
+                                <span class="role">
+                                    {{ profile.get_role_display }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ profile.created_at|date:"d M Y, h:i A" }}
+                            </td>
+
+                            <td>
+                                <span class="pending">
+                                    Pending Approval
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <a
+                                    href="{% url 'approve_account' profile.user.id %}"
+                                    class="approve-button"
+                                    onclick="return confirm('Are you sure you want to approve this account?');"
+                                >
+                                    Approve
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        {% else %}
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    ✓
+                </div>
+
+                <h2>No Pending Approvals</h2>
+
+                <p>
+                    There are currently no accounts waiting for approval.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

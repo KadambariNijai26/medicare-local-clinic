@@ -1,0 +1,452 @@
+
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    Medicare | Doctor Dashboard
+{% endblock %}
+
+{% block page_title %}
+    Doctor Dashboard
+{% endblock %}
+
+{% block content %}
+
+
+<!-- =====================================================
+     DOCTOR INFORMATION
+====================================================== -->
+
+{% if doctor %}
+
+<section class="dashboard-card"
+         style="margin-bottom: 25px;">
+
+    <div class="card-header">
+
+        <h2>
+            Doctor Information
+        </h2>
+
+        <span>
+            Professional Profile
+        </span>
+
+    </div>
+
+
+    <div class="system-info">
+
+        <div>
+            <span>Doctor</span>
+
+            <strong>
+                Dr.
+                {{ doctor.user.get_full_name|default:doctor.user.username }}
+            </strong>
+        </div>
+
+
+        <div>
+            <span>Specialization</span>
+
+            <strong>
+                {{ doctor.get_specialization_display }}
+            </strong>
+        </div>
+
+
+        <div>
+            <span>Qualification</span>
+
+            <strong>
+                {{ doctor.qualification }}
+            </strong>
+        </div>
+
+
+        <div>
+            <span>Experience</span>
+
+            <strong>
+                {{ doctor.experience }} years
+            </strong>
+        </div>
+
+
+        <div>
+            <span>Consultation Fee</span>
+
+            <strong>
+                ₹{{ doctor.consultation_fee }}
+            </strong>
+        </div>
+
+
+        <div>
+            <span>Available Days</span>
+
+            <strong>
+                {{ doctor.available_days|default:"Not specified" }}
+            </strong>
+        </div>
+
+
+        <div>
+            <span>Availability</span>
+
+            {% if doctor.is_available %}
+
+                <strong class="status-approved">
+                    Available
+                </strong>
+
+            {% else %}
+
+                <strong>
+                    Not Available
+                </strong>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+
+<!-- =====================================================
+     STATISTICS
+====================================================== -->
+
+<section class="stats-grid">
+
+
+    <!-- Today's Appointments -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📅
+        </div>
+
+        <div>
+
+            <p>
+                Today's Appointments
+            </p>
+
+            <h2>
+                {{ today_appointments }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- My Patients -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🧑‍🤝‍🧑
+        </div>
+
+        <div>
+
+            <p>
+                My Patients
+            </p>
+
+            <h2>
+                {{ my_patients }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- Medical Records -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📋
+        </div>
+
+        <div>
+
+            <p>
+                Medical Records
+            </p>
+
+            <h2>
+                {{ total_medical_records }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- Prescriptions -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            💊
+        </div>
+
+        <div>
+
+            <p>
+                Prescriptions
+            </p>
+
+            <h2>
+                {{ total_prescriptions }}
+            </h2>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     DASHBOARD GRID
+====================================================== -->
+
+<section class="dashboard-grid">
+
+
+    <!-- Upcoming Appointments -->
+
+    <div class="dashboard-card"
+         id="upcoming-appointments">
+
+        <div class="card-header">
+
+            <h2>
+                Upcoming Appointments
+            </h2>
+
+            <span>
+                Next 5
+            </span>
+
+        </div>
+
+
+        {% if upcoming_appointments %}
+
+            <div class="system-info">
+
+                {% for appointment in upcoming_appointments %}
+
+                    <div>
+
+                        <span>
+
+                            {{ appointment.appointment_date|date:"d M Y" }}
+
+                            &nbsp; | &nbsp;
+
+                            {{ appointment.appointment_time|time:"h:i A" }}
+
+                        </span>
+
+
+                        <strong>
+
+                            {{ appointment.patient.user.get_full_name|default:appointment.patient.user.username }}
+
+                        </strong>
+
+
+                        <span>
+
+                            {{ appointment.get_status_display }}
+
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <p style="
+                color: #788b85;
+                font-size: 14px;
+                padding: 15px 0;
+            ">
+
+                No upcoming appointments.
+
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+
+    <!-- Doctor Actions -->
+
+    <div class="dashboard-card"
+         id="doctor-actions">
+
+        <div class="card-header">
+
+            <h2>
+                Doctor Actions
+            </h2>
+
+            <span>
+                Quick Access
+            </span>
+
+        </div>
+
+
+        <div class="quick-actions">
+
+            <a href="{% url 'doctor_appointments' %}"
+               class="action-button">
+
+                View My Appointments
+
+            </a>
+
+
+            <a href="{% url 'doctor_patients' %}"
+               class="action-button">
+
+                View My Patients
+
+            </a>
+
+
+            <a href="{% url 'doctor_medical_records' %}"
+               class="action-button">
+
+                Medical Records
+
+            </a>
+
+
+            <a href="{% url 'add_medical_record' %}"
+               class="action-button">
+
+                Create Medical Record
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     ACCOUNT INFORMATION
+====================================================== -->
+
+<section class="dashboard-card"
+         style="margin-top: 25px;">
+
+    <div class="card-header">
+
+        <h2>
+            Account Information
+        </h2>
+
+        <span>
+            Login Details
+        </span>
+
+    </div>
+
+
+    <div class="system-info">
+
+        <div>
+
+            <span>
+                Username
+            </span>
+
+            <strong>
+                {{ request.user.username }}
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                Role
+            </span>
+
+            <strong>
+                Doctor
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                Account Status
+            </span>
+
+            <strong class="status-approved">
+                Approved
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                Email
+            </span>
+
+            <strong>
+                {{ request.user.email|default:"Not provided" }}
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<footer class="dashboard-footer">
+
+    © 2026 Medicare Local Clinic Management System
+
+</footer>
+
+{% endblock %}

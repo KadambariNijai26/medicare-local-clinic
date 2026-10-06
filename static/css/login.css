@@ -1,0 +1,307 @@
+/* =========================================
+   MEDICARE - LOGIN PAGE
+   Hospital Theme
+   Primary: Light Green
+   Secondary: Soft Teal
+   ========================================= */
+
+
+/* ---------- Global Reset ---------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* ---------- Body ---------- */
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-image:
+        linear-gradient(
+            rgba(226, 247, 236, 0.88),
+            rgba(226, 247, 236, 0.88)
+        ),
+        url("../images/login-bg.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    color: #155e63;
+}
+
+
+/* ---------- Login Wrapper ---------- */
+
+.login-wrapper {
+    width: 100%;
+    max-width: 430px;
+
+    padding: 20px;
+}
+
+
+/* ---------- Login Card ---------- */
+
+.login-card {
+    background: #ffffff;
+
+    padding: 42px 38px;
+
+    border-radius: 20px;
+
+    border-top: 6px solid #65c18c;
+
+    box-shadow:
+        0 15px 40px rgba(21, 94, 99, 0.20);
+
+    text-align: center;
+}
+
+
+/* ---------- Logo ---------- */
+
+.logo-circle {
+    width: 70px;
+    height: 70px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background: #65c18c;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: #ffffff;
+
+    font-size: 30px;
+    font-weight: 700;
+}
+
+
+/* ---------- Brand Name ---------- */
+
+.brand-name {
+    font-size: 34px;
+    font-weight: 700;
+
+    color: #155e63;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 6px;
+}
+
+
+/* ---------- Subtitle ---------- */
+
+.brand-subtitle {
+    font-size: 14px;
+
+    color: #4f8588;
+
+    margin-bottom: 30px;
+}
+
+
+/* ---------- Form Group ---------- */
+
+.form-group {
+    text-align: left;
+
+    margin-bottom: 20px;
+}
+
+
+/* ---------- Labels ---------- */
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #155e63;
+}
+
+
+/* ---------- Input Fields ---------- */
+
+.form-group input {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    border: 1.5px solid #b9ddd0;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    background: #f5fcf8;
+
+    color: #155e63;
+
+    font-size: 15px;
+
+    transition: 0.3s ease;
+}
+
+
+/* ---------- Input Focus ---------- */
+
+.form-group input:focus {
+    border-color: #65c18c;
+
+    box-shadow:
+        0 0 0 3px rgba(101, 193, 140, 0.15);
+}
+
+
+/* ---------- Placeholder ---------- */
+
+.form-group input::placeholder {
+    color: #8aa9a6;
+}
+
+
+/* ---------- Login Button ---------- */
+
+.login-btn {
+    width: 100%;
+
+    padding: 14px;
+
+    margin-top: 5px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #65c18c;
+
+    color: #ffffff;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+}
+
+
+/* ---------- Button Hover ---------- */
+
+.login-btn:hover {
+    background: #155e63;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px rgba(21, 94, 99, 0.20);
+}
+
+
+/* ---------- Messages ---------- */
+
+.messages {
+    margin-bottom: 18px;
+}
+
+
+.message {
+    padding: 10px 12px;
+
+    margin-bottom: 8px;
+
+    border-radius: 8px;
+
+    background: #e8f7ef;
+
+    color: #155e63;
+
+    font-size: 13px;
+}
+
+
+/* ---------- Login Footer ---------- */
+
+.login-footer {
+    margin-top: 25px;
+
+    color: #6d9290;
+
+    font-size: 12px;
+}
+
+
+/* ---------- Responsive Design ---------- */
+
+@media (max-width: 500px) {
+
+    .login-wrapper {
+        padding: 15px;
+    }
+
+    .login-card {
+        padding: 35px 25px;
+    }
+
+    .brand-name {
+        font-size: 29px;
+    }
+
+    .logo-circle {
+        width: 60px;
+        height: 60px;
+
+        font-size: 25px;
+    }
+}
+/* ---------- Registration Section ---------- */
+
+.register-section {
+    margin-top: 22px;
+
+    font-size: 13px;
+
+    color: #4f8588;
+}
+
+
+.register-section a {
+    color: #155e63;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    margin-left: 4px;
+
+    transition: 0.3s ease;
+}
+
+
+.register-section a:hover {
+    color: #65c18c;
+
+    text-decoration: underline;
+}

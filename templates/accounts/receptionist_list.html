@@ -1,0 +1,677 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Medicare | Receptionists</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8f7;
+            color: #263238;
+        }
+
+        .page-container {
+            width: 95%;
+            max-width: 1250px;
+            margin: 30px auto;
+        }
+
+        /* HEADER */
+
+        .page-header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .header-left h1 {
+            color: #2e7d72;
+            margin-bottom: 6px;
+        }
+
+        .header-left p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .btn-back {
+            background: #eeeeee;
+            color: #444;
+        }
+
+        .btn-add {
+            background: #2e7d72;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+
+        /* SEARCH */
+
+        .search-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+
+            margin-bottom: 25px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+
+            padding: 12px 15px;
+
+            border: 1px solid #ddd;
+            border-radius: 8px;
+
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #2e7d72;
+        }
+
+        .search-button {
+            border: none;
+
+            background: #2e7d72;
+            color: white;
+
+            padding: 12px 22px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .clear-button {
+            text-decoration: none;
+
+            background: #eeeeee;
+            color: #444;
+
+            padding: 12px 18px;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+        }
+
+
+        /* MESSAGES */
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px 15px;
+
+            background: #e8f5e9;
+
+            color: #2e7d32;
+
+            border-radius: 8px;
+
+            margin-bottom: 8px;
+        }
+
+
+        /* TABLE */
+
+        .table-card {
+            background: white;
+
+            border-radius: 15px;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px 25px;
+
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .table-header h2 {
+            color: #2e7d72;
+            margin-bottom: 5px;
+        }
+
+        .table-header p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f1f7f6;
+
+            color: #2e7d72;
+
+            text-align: left;
+
+            padding: 15px;
+
+            font-size: 13px;
+
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 15px;
+
+            border-top: 1px solid #eeeeee;
+
+            font-size: 14px;
+
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: #fafdfc;
+        }
+
+
+        /* STATUS */
+
+        .status {
+            display: inline-block;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+        .approved {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+
+        /* ACTIONS */
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            text-decoration: none;
+
+            padding: 7px 12px;
+
+            border-radius: 6px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+        .approve-btn {
+            background: #2e7d72;
+            color: white;
+        }
+
+        .approve-btn:hover {
+            background: #25685f;
+        }
+
+
+        /* EMPTY */
+
+        .empty-state {
+            padding: 60px 20px;
+
+            text-align: center;
+
+            color: #777;
+        }
+
+        .empty-state h3 {
+            color: #555;
+
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            margin-bottom: 20px;
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 768px) {
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+
+                gap: 20px;
+            }
+
+            .header-buttons {
+                width: 100%;
+            }
+
+            .header-buttons .btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-button,
+            .clear-button {
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page-container">
+
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div class="header-left">
+
+            <h1>Receptionist Management</h1>
+
+            <p>
+                View and manage clinic receptionists
+            </p>
+
+        </div>
+
+
+        <div class="header-buttons">
+
+            <a href="{% url 'admin_dashboard' %}"
+               class="btn btn-back">
+
+                ← Admin Dashboard
+
+            </a>
+
+
+            <a href="{% url 'add_receptionist' %}"
+               class="btn btn-add">
+
+                + Add Receptionist
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MESSAGES -->
+
+    {% if messages %}
+
+        <div class="messages">
+
+            {% for message in messages %}
+
+                <div class="message">
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+
+    <!-- SEARCH -->
+
+    <div class="search-card">
+
+        <form method="GET"
+              class="search-form">
+
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                class="search-input"
+                placeholder="Search by name, username, email or phone..."
+            >
+
+            <button
+                type="submit"
+                class="search-button">
+
+                Search
+
+            </button>
+
+
+            {% if search %}
+
+                <a href="{% url 'receptionist_list' %}"
+                   class="clear-button">
+
+                    Clear
+
+                </a>
+
+            {% endif %}
+
+        </form>
+
+    </div>
+
+
+
+    <!-- RECEPTIONIST TABLE -->
+
+    <div class="table-card">
+
+
+        <div class="table-header">
+
+            <h2>Registered Receptionists</h2>
+
+            <p>
+                All receptionist accounts registered in Medicare
+            </p>
+
+        </div>
+
+
+
+        {% if receptionists %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Name
+                            </th>
+
+                            <th>
+                                Username
+                            </th>
+
+                            <th>
+                                Email
+                            </th>
+
+                            <th>
+                                Phone
+                            </th>
+
+                            <th>
+                                Registered On
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for receptionist in receptionists %}
+
+                            <tr>
+
+                                <!-- NAME -->
+
+                                <td>
+
+                                    <strong>
+
+                                        {{ receptionist.user.get_full_name|default:receptionist.user.username }}
+
+                                    </strong>
+
+                                </td>
+
+
+                                <!-- USERNAME -->
+
+                                <td>
+
+                                    {{ receptionist.user.username }}
+
+                                </td>
+
+
+                                <!-- EMAIL -->
+
+                                <td>
+
+                                    {{ receptionist.user.email|default:"-" }}
+
+                                </td>
+
+
+                                <!-- PHONE -->
+
+                                <td>
+
+                                    {{ receptionist.phone|default:"-" }}
+
+                                </td>
+
+
+                                <!-- REGISTERED DATE -->
+
+                                <td>
+
+                                    {{ receptionist.created_at|date:"d M Y, h:i A" }}
+
+                                </td>
+
+
+                                <!-- STATUS -->
+
+                                <td>
+
+                                    {% if receptionist.is_approved %}
+
+                                        <span class="status approved">
+
+                                            Approved
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status pending">
+
+                                            Pending
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- ACTION -->
+
+                                <td>
+
+                                    <div class="action-buttons">
+
+                                        {% if not receptionist.is_approved %}
+
+                                            <a
+                                                href="{% url 'approve_account' receptionist.user.id %}"
+                                                class="action-btn approve-btn"
+                                                onclick="return confirm('Are you sure you want to approve this receptionist?');"
+                                            >
+
+                                                Approve
+
+                                            </a>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <h3>
+                    No Receptionists Found
+                </h3>
+
+                {% if search %}
+
+                    <p>
+                        No receptionist matches your search.
+                    </p>
+
+                    <a
+                        href="{% url 'receptionist_list' %}"
+                        class="btn btn-back"
+                    >
+                        Clear Search
+                    </a>
+
+                {% else %}
+
+                    <p>
+                        No receptionist accounts have been registered yet.
+                    </p>
+
+                    <a
+                        href="{% url 'add_receptionist' %}"
+                        class="btn btn-add"
+                    >
+                        + Add Receptionist
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        {% endif %}
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

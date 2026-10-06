@@ -1,0 +1,673 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Medicare | Add Receptionist</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8f7;
+            color: #263238;
+        }
+
+        .page-container {
+            width: 95%;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        /* HEADER */
+
+        .page-header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            color: #2e7d72;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .back-button {
+            text-decoration: none;
+
+            background: #eeeeee;
+            color: #444;
+
+            padding: 11px 18px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            background: #e2e2e2;
+        }
+
+
+        /* FORM CARD */
+
+        .form-card {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 15px;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-title {
+            color: #2e7d72;
+
+            margin-bottom: 8px;
+
+            font-size: 22px;
+        }
+
+        .form-description {
+            color: #777;
+
+            font-size: 14px;
+
+            margin-bottom: 25px;
+        }
+
+
+        /* MESSAGES */
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px 15px;
+
+            border-radius: 8px;
+
+            background: #ffebee;
+
+            color: #c62828;
+
+            margin-bottom: 8px;
+
+            font-size: 14px;
+        }
+
+
+        /* FORM */
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 14px;
+
+            font-weight: bold;
+
+            margin-bottom: 7px;
+
+            color: #37474f;
+        }
+
+        label span {
+            color: #d32f2f;
+        }
+
+        input {
+            width: 100%;
+
+            padding: 12px 14px;
+
+            border: 1px solid #d6d6d6;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            background: #fff;
+        }
+
+        input:focus {
+            outline: none;
+
+            border-color: #2e7d72;
+
+            box-shadow: 0 0 0 2px rgba(46, 125, 114, 0.08);
+        }
+
+        .help-text {
+            margin-top: 6px;
+
+            font-size: 12px;
+
+            color: #888;
+        }
+
+
+        /* PASSWORD */
+
+        .password-note {
+            background: #f1f7f6;
+
+            color: #546e7a;
+
+            padding: 12px 15px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            margin-top: 5px;
+        }
+
+
+        /* APPROVAL INFO */
+
+        .approval-box {
+            margin-top: 25px;
+
+            background: #e8f5e9;
+
+            border-left: 4px solid #2e7d72;
+
+            padding: 15px;
+
+            border-radius: 8px;
+
+            color: #365f59;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+        }
+
+
+        /* BUTTONS */
+
+        .form-actions {
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 12px;
+
+            margin-top: 30px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #eeeeee;
+        }
+
+        .btn {
+            border: none;
+
+            padding: 12px 22px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            text-decoration: none;
+        }
+
+        .cancel-btn {
+            background: #eeeeee;
+
+            color: #444;
+        }
+
+        .cancel-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .submit-btn {
+            background: #2e7d72;
+
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background: #25685f;
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 700px) {
+
+            .page-container {
+                width: 92%;
+
+                margin: 20px auto;
+            }
+
+            .page-header {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page-container">
+
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1>Add Receptionist</h1>
+
+            <p>
+                Create a new receptionist account for the clinic
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'receptionist_list' %}"
+            class="back-button"
+        >
+
+            ← Receptionists
+
+        </a>
+
+    </div>
+
+
+
+    <!-- FORM CARD -->
+
+    <div class="form-card">
+
+
+        <h2 class="form-title">
+            Receptionist Details
+        </h2>
+
+
+        <p class="form-description">
+
+            Enter the receptionist's account and contact information.
+
+            Accounts created by the administrator are automatically approved.
+
+        </p>
+
+
+
+        <!-- MESSAGES -->
+
+        {% if messages %}
+
+            <div class="messages">
+
+                {% for message in messages %}
+
+                    <div class="message">
+
+                        {{ message }}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+
+        <!-- FORM -->
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="form-grid">
+
+
+                <!-- FIRST NAME -->
+
+                <div class="form-group">
+
+                    <label for="first_name">
+
+                        First Name <span>*</span>
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="first_name"
+                        name="first_name"
+                        placeholder="Enter first name"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- LAST NAME -->
+
+                <div class="form-group">
+
+                    <label for="last_name">
+
+                        Last Name
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="last_name"
+                        name="last_name"
+                        placeholder="Enter last name"
+                    >
+
+                </div>
+
+
+
+                <!-- USERNAME -->
+
+                <div class="form-group">
+
+                    <label for="username">
+
+                        Username <span>*</span>
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter username"
+                        autocomplete="username"
+                        required
+                    >
+
+                    <div class="help-text">
+
+                        This username will be used for login.
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+
+                        Email
+
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter email address"
+                        autocomplete="email"
+                    >
+
+                </div>
+
+
+
+                <!-- PHONE -->
+
+                <div class="form-group">
+
+                    <label for="phone">
+
+                        Phone Number
+
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter phone number"
+                        maxlength="15"
+                    >
+
+                </div>
+
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="password">
+
+                        Password <span>*</span>
+
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- CONFIRM PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="confirm_password">
+
+                        Confirm Password <span>*</span>
+
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Confirm password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- PASSWORD NOTE -->
+
+            <div class="password-note">
+
+                🔐 Make sure to provide the receptionist with their
+                username and password securely.
+
+            </div>
+
+
+
+            <!-- APPROVAL INFO -->
+
+            <div class="approval-box">
+
+                <strong>Account Status:</strong>
+
+                Receptionists created by the administrator are
+                automatically marked as
+
+                <strong>Approved</strong>
+
+                and can log in immediately.
+
+            </div>
+
+
+
+            <!-- ACTION BUTTONS -->
+
+            <div class="form-actions">
+
+                <a
+                    href="{% url 'receptionist_list' %}"
+                    class="btn cancel-btn"
+                >
+
+                    Cancel
+
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="btn submit-btn"
+                >
+
+                    + Add Receptionist
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- PASSWORD MATCH VALIDATION -->
+
+<script>
+
+    const form = document.querySelector('form');
+
+    form.addEventListener('submit', function(event) {
+
+        const password =
+            document.getElementById('password').value;
+
+        const confirmPassword =
+            document.getElementById('confirm_password').value;
+
+
+        if (password !== confirmPassword) {
+
+            event.preventDefault();
+
+            alert('Passwords do not match.');
+
+        }
+
+    });
+
+</script>
+
+
+</body>
+
+</html>

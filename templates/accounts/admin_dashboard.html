@@ -1,0 +1,657 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    Medicare | Admin Dashboard
+{% endblock %}
+
+{% block page_title %}
+    Admin Dashboard
+{% endblock %}
+
+{% block content %}
+
+<!-- =========================
+     Statistics
+========================== -->
+
+<section class="stats-grid">
+
+    <!-- Doctors -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            👨‍⚕️
+        </div>
+
+        <div>
+            <p>Doctors</p>
+
+            <h2>
+                {{ total_doctors }}
+            </h2>
+        </div>
+
+    </div>
+
+
+    <!-- Patients -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🧑‍🤝‍🧑
+        </div>
+
+        <div>
+            <p>Patients</p>
+
+            <h2>
+                {{ total_patients }}
+            </h2>
+        </div>
+
+    </div>
+
+
+    <!-- Receptionists -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            👩‍💼
+        </div>
+
+        <div>
+            <p>Receptionists</p>
+
+            <h2>
+                {{ total_receptionists }}
+            </h2>
+        </div>
+
+    </div>
+
+
+    <!-- Appointments -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📅
+        </div>
+
+        <div>
+            <p>Appointments</p>
+
+            <h2>
+                {{ total_appointments }}
+            </h2>
+        </div>
+
+    </div>
+
+
+    <!-- Medical Records -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📋
+        </div>
+
+        <div>
+            <p>Medical Records</p>
+
+            <h2>
+                {{ total_medical_records }}
+            </h2>
+        </div>
+
+    </div>
+
+
+    <!-- Pending Approvals -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ⏳
+        </div>
+
+        <div>
+            <p>Pending Approvals</p>
+
+            <h2>
+                {{ pending_approvals_count }}
+            </h2>
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================
+     Dashboard Content
+========================== -->
+
+<section class="dashboard-grid">
+
+
+    <!-- =========================
+         Quick Actions
+    ========================== -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <h2>
+                Quick Actions
+            </h2>
+
+            <span>
+                Manage Clinic
+            </span>
+
+        </div>
+
+
+        <div class="quick-actions">
+
+
+            <!-- Pending Approvals -->
+
+            <a href="{% url 'pending_approvals' %}"
+               class="action-button">
+
+                ⏳ Pending Approvals
+
+            </a>
+
+
+            <!-- Add Doctor -->
+
+            <a href="{% url 'add_doctor' %}"
+               class="action-button">
+
+                Add Doctor
+
+            </a>
+
+
+            <!-- Add Patient -->
+
+            <a href="{% url 'add_patient' %}"
+               class="action-button">
+
+                Add Patient
+
+            </a>
+
+
+            <!-- Add Receptionist -->
+
+            <a href="{% url 'add_receptionist' %}"
+               class="action-button">
+
+                👩‍💼 Add Receptionist
+
+            </a>
+
+
+            <!-- Add Appointment -->
+
+            <a href="{% url 'add_appointment' %}"
+               class="action-button">
+
+                Add Appointment
+
+            </a>
+
+
+            <!-- Add Medical Record -->
+
+            <a href="{% url 'add_medical_record' %}"
+               class="action-button">
+
+                Add Medical Record
+
+            </a>
+
+
+            <!-- View Patients -->
+
+            <a href="{% url 'patient_list' %}"
+               class="action-button">
+
+                View Patients
+
+            </a>
+
+
+            <!-- View Doctors -->
+
+            <a href="{% url 'doctor_list' %}"
+               class="action-button">
+
+                View Doctors
+
+            </a>
+
+
+            <!-- View Receptionists -->
+
+            <a href="{% url 'receptionist_list' %}"
+               class="action-button">
+
+                👩‍💼 View Receptionists
+
+            </a>
+
+
+            <!-- View Appointments -->
+
+            <a href="{% url 'appointment_list' %}"
+               class="action-button">
+
+                View Appointments
+
+            </a>
+
+
+            <!-- View Medical Records -->
+
+            <a href="{% url 'medical_record_list' %}"
+               class="action-button">
+
+                View Medical Records
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         System Information
+    ========================== -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <h2>
+                System Information
+            </h2>
+
+        </div>
+
+
+        <div class="system-info">
+
+
+            <!-- User -->
+
+            <div>
+
+                <span>
+                    User
+                </span>
+
+                <strong>
+                    {{ request.user.username }}
+                </strong>
+
+            </div>
+
+
+            <!-- Role -->
+
+            <div>
+
+                <span>
+                    Role
+                </span>
+
+                <strong>
+                    Administrator
+                </strong>
+
+            </div>
+
+
+            <!-- Access Level -->
+
+            <div>
+
+                <span>
+                    Access Level
+                </span>
+
+                <strong class="status-approved">
+                    Full Access
+                </strong>
+
+            </div>
+
+
+            <!-- Patients -->
+
+            <div>
+
+                <span>
+                    Registered Patients
+                </span>
+
+                <strong>
+                    {{ total_patients }}
+                </strong>
+
+            </div>
+
+
+            <!-- Doctors -->
+
+            <div>
+
+                <span>
+                    Registered Doctors
+                </span>
+
+                <strong>
+                    {{ total_doctors }}
+                </strong>
+
+            </div>
+
+
+            <!-- Receptionists -->
+
+            <div>
+
+                <span>
+                    Registered Receptionists
+                </span>
+
+                <strong>
+                    {{ total_receptionists }}
+                </strong>
+
+            </div>
+
+
+            <!-- Pending Approvals -->
+
+            <div>
+
+                <span>
+                    Pending Approvals
+                </span>
+
+                <strong>
+                    {{ pending_approvals_count }}
+                </strong>
+
+            </div>
+
+
+            <!-- Medical Records -->
+
+            <div>
+
+                <span>
+                    Medical Records
+                </span>
+
+                <strong>
+                    {{ total_medical_records }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================
+     Receptionist Details
+========================== -->
+
+<section class="dashboard-card receptionist-section">
+
+
+    <div class="card-header">
+
+        <h2>
+            👩‍💼 Receptionist Details
+        </h2>
+
+        <span>
+            Registered Receptionists
+        </span>
+
+    </div>
+
+
+    {% if receptionists %}
+
+
+        <div class="table-container">
+
+            <table class="data-table">
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Username
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Phone
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Registered On
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for profile in receptionists %}
+
+                        <tr>
+
+
+                            <!-- Name -->
+
+                            <td>
+
+                                <strong>
+
+                                    {{ profile.user.get_full_name|default:profile.user.username }}
+
+                                </strong>
+
+                            </td>
+
+
+                            <!-- Username -->
+
+                            <td>
+
+                                {{ profile.user.username }}
+
+                            </td>
+
+
+                            <!-- Email -->
+
+                            <td>
+
+                                {{ profile.user.email|default:"-" }}
+
+                            </td>
+
+
+                            <!-- Phone -->
+
+                            <td>
+
+                                {{ profile.phone|default:"-" }}
+
+                            </td>
+
+
+                            <!-- Status -->
+
+                            <td>
+
+
+                                {% if profile.is_approved %}
+
+                                    <span class="status-approved">
+
+                                        Approved
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="status-pending">
+
+                                        Pending Approval
+
+                                    </span>
+
+                                {% endif %}
+
+
+                            </td>
+
+
+                            <!-- Registered Date -->
+
+                            <td>
+
+                                {{ profile.created_at|date:"d M Y, h:i A" }}
+
+                            </td>
+
+
+                            <!-- Action -->
+
+                            <td>
+
+
+                                {% if not profile.is_approved %}
+
+                                    <a
+                                        href="{% url 'approve_account' profile.user.id %}"
+                                        class="action-button"
+                                        onclick="return confirm('Are you sure you want to approve this receptionist?');"
+                                    >
+
+                                        Approve
+
+                                    </a>
+
+                                {% else %}
+
+                                    <span>
+                                        —
+                                    </span>
+
+                                {% endif %}
+
+
+                            </td>
+
+
+                        </tr>
+
+                    {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+    {% else %}
+
+
+        <div class="empty-state">
+
+            <p>
+                No receptionists have registered yet.
+            </p>
+
+            <br>
+
+            <a
+                href="{% url 'add_receptionist' %}"
+                class="action-button"
+            >
+
+                + Add Receptionist
+
+            </a>
+
+        </div>
+
+
+    {% endif %}
+
+
+</section>
+
+
+
+<!-- =========================
+     Footer
+========================== -->
+
+<footer class="dashboard-footer">
+
+    <p>
+        © 2026 Medicare Local Clinic Management System
+    </p>
+
+</footer>
+
+{% endblock %}

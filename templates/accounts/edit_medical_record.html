@@ -1,0 +1,499 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}
+Edit Medical Record | Medicare
+{% endblock %}
+
+{% block page_title %}
+Edit Medical Record
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .form-card {
+        background: white;
+        border-radius: 14px;
+        padding: 30px;
+        box-shadow: 0 5px 18px rgba(25, 90, 75, 0.06);
+        border: 1px solid #d8ebe5;
+        max-width: 1050px;
+    }
+
+    .section-title {
+        color: #197765;
+        font-size: 18px;
+        margin-bottom: 22px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e2efeb;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px 25px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #345c53;
+        margin-bottom: 8px;
+    }
+
+    .required {
+        color: #d85b5b;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        border: 1px solid #cfe3dc;
+        border-radius: 9px;
+        padding: 12px 13px;
+        font-size: 14px;
+        color: #294a43;
+        background: #fbfefd;
+        outline: none;
+        transition: 0.25s;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #42a890;
+        box-shadow: 0 0 0 3px rgba(66, 168, 144, 0.12);
+        background: white;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 110px;
+    }
+
+    .help-text {
+        color: #829890;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .messages {
+        margin-bottom: 20px;
+    }
+
+    .message {
+        padding: 12px 15px;
+        border-radius: 9px;
+        background: #fff4dc;
+        color: #856404;
+        font-size: 14px;
+        border: 1px solid #f4dfae;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 22px;
+        border-top: 1px solid #e5efec;
+    }
+
+    .cancel-btn {
+        display: inline-block;
+        text-decoration: none;
+        background: #edf3f1;
+        color: #527068;
+        padding: 12px 22px;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .cancel-btn:hover {
+        background: #dfeae7;
+    }
+
+    .save-btn {
+        border: none;
+        background: #188b75;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 5px 12px rgba(24, 139, 117, 0.2);
+    }
+
+    .save-btn:hover {
+        background: #11745f;
+    }
+
+    .record-info {
+        background: #eef8f6;
+        border: 1px solid #d8ece8;
+        border-radius: 9px;
+        padding: 14px 16px;
+        margin-bottom: 22px;
+        color: #35665e;
+        font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full {
+            grid-column: auto;
+        }
+    }
+
+    @media (max-width: 650px) {
+        .form-card {
+            padding: 20px;
+        }
+
+        .form-actions {
+            justify-content: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+
+
+<!-- Page Introduction -->
+
+<div style="margin-bottom: 25px;">
+
+    <p style="color: #718b84; font-size: 14px; margin-top: 5px;">
+        Update the patient's medical information.
+    </p>
+
+</div>
+
+
+<!-- Django Messages -->
+
+{% if messages %}
+
+    <div class="messages">
+
+        {% for message in messages %}
+
+            <div class="message">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+{% endif %}
+
+
+<!-- Form Card -->
+
+<div class="form-card">
+
+    <h2 class="section-title">
+        Patient & Consultation Details
+    </h2>
+
+
+    <div class="record-info">
+
+        Editing medical record for
+
+        <strong>
+            {{ record.patient.user.get_full_name|default:record.patient.user.username }}
+        </strong>.
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <div class="form-grid">
+
+
+            <!-- PATIENT -->
+
+            <div class="form-group">
+
+                <label for="patient">
+
+                    Patient
+                    <span class="required">*</span>
+
+                </label>
+
+
+                <select name="patient"
+                        id="patient"
+                        required>
+
+                    <option value="">
+                        Select Patient
+                    </option>
+
+
+                    {% for patient in patients %}
+
+                        <option
+                            value="{{ patient.id }}"
+                            {% if record.patient.id == patient.id %}
+                                selected
+                            {% endif %}
+                        >
+
+                            {{ patient.user.get_full_name|default:patient.user.username }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- DOCTOR -->
+
+            <div class="form-group">
+
+                <label for="doctor">
+
+                    Doctor
+                    <span class="required">*</span>
+
+                </label>
+
+
+                <select name="doctor"
+                        id="doctor"
+                        required>
+
+                    <option value="">
+                        Select Doctor
+                    </option>
+
+
+                    {% for doctor in doctors %}
+
+                        <option
+                            value="{{ doctor.id }}"
+                            {% if record.doctor and record.doctor.id == doctor.id %}
+                                selected
+                            {% endif %}
+                        >
+
+                            Dr.
+                            {{ doctor.user.get_full_name|default:doctor.user.username }}
+
+                            — {{ doctor.get_specialization_display }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- APPOINTMENT -->
+
+            <div class="form-group full">
+
+                <label for="appointment">
+                    Appointment
+                </label>
+
+
+                <select name="appointment"
+                        id="appointment">
+
+                    <option value="">
+                        No Appointment / Select Appointment
+                    </option>
+
+
+                    {% for appointment in appointments %}
+
+                        <option
+                            value="{{ appointment.id }}"
+                            {% if record.appointment and record.appointment.id == appointment.id %}
+                                selected
+                            {% endif %}
+                        >
+
+                            {{ appointment.patient.user.get_full_name|default:appointment.patient.user.username }}
+
+                            —
+
+                            Dr.
+                            {{ appointment.doctor.user.get_full_name|default:appointment.doctor.user.username }}
+
+                            —
+
+                            {{ appointment.appointment_date }}
+
+                            at
+
+                            {{ appointment.appointment_time }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <span class="help-text">
+
+                    Link this record to an existing appointment if applicable.
+
+                </span>
+
+            </div>
+
+
+            <!-- DIAGNOSIS -->
+
+            <div class="form-group full">
+
+                <label for="diagnosis">
+
+                    Diagnosis
+                    <span class="required">*</span>
+
+                </label>
+
+
+                <textarea
+                    name="diagnosis"
+                    id="diagnosis"
+                    placeholder="Enter the patient's diagnosis..."
+                    required
+                >{{ record.diagnosis }}</textarea>
+
+            </div>
+
+
+            <!-- SYMPTOMS -->
+
+            <div class="form-group full">
+
+                <label for="symptoms">
+                    Symptoms
+                </label>
+
+
+                <textarea
+                    name="symptoms"
+                    id="symptoms"
+                    placeholder="Describe the patient's symptoms..."
+                >{{ record.symptoms }}</textarea>
+
+            </div>
+
+
+            <!-- PRESCRIPTION -->
+
+            <div class="form-group full">
+
+                <label for="prescription">
+                    Prescription
+                </label>
+
+
+                <textarea
+                    name="prescription"
+                    id="prescription"
+                    placeholder="Enter prescribed medicines and dosage instructions..."
+                >{{ record.prescription }}</textarea>
+
+            </div>
+
+
+            <!-- TREATMENT -->
+
+            <div class="form-group full">
+
+                <label for="treatment">
+                    Treatment
+                </label>
+
+
+                <textarea
+                    name="treatment"
+                    id="treatment"
+                    placeholder="Enter treatment or procedure details..."
+                >{{ record.treatment }}</textarea>
+
+            </div>
+
+
+            <!-- NOTES -->
+
+            <div class="form-group full">
+
+                <label for="notes">
+                    Additional Notes
+                </label>
+
+
+                <textarea
+                    name="notes"
+                    id="notes"
+                    placeholder="Enter any additional notes..."
+                >{{ record.notes }}</textarea>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="form-actions">
+
+            <a href="{% url 'medical_record_list' %}"
+               class="cancel-btn">
+
+                Cancel
+
+            </a>
+
+
+            <button type="submit"
+                    class="save-btn">
+
+                Update Medical Record
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

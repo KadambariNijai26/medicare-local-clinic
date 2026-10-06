@@ -1,0 +1,650 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}
+    Medicare | Medical Records
+{% endblock %}
+
+{% block page_title %}
+    Medical Records
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .page-intro {
+        margin-bottom: 25px;
+    }
+
+    .page-intro h2 {
+        color: #155e63;
+        margin-bottom: 6px;
+    }
+
+    .page-intro p {
+        color: #627c78;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .record-list {
+        display: grid;
+        gap: 16px;
+    }
+
+    .record-card {
+        background: #ffffff;
+        border: 1px solid #e1eee8;
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .record-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .patient-name {
+        color: #155e63;
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .record-date {
+        color: #7b928e;
+        font-size: 12px;
+    }
+
+    .record-details {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .record-detail {
+        background: #f5fbf7;
+        padding: 13px;
+        border-radius: 8px;
+    }
+
+    .record-detail.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .record-label {
+        display: block;
+        color: #7b928e;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-bottom: 6px;
+    }
+
+    .record-value {
+        color: #456764;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .record-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+        padding-top: 15px;
+        border-top: 1px solid #edf3ef;
+    }
+
+    .delete-record-button {
+        background: #fff1f1 !important;
+        color: #c94b4b !important;
+    }
+
+    .delete-record-button:hover {
+        background: #ffe2e2 !important;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 45px 20px;
+        color: #627c78;
+    }
+
+    .empty-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 15px;
+        border-radius: 50%;
+        background: #e1f5ea;
+        color: #155e63;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .empty-state h3 {
+        color: #155e63;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        font-size: 13px;
+        margin: 0;
+    }
+
+    .doctor-info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .doctor-info-item {
+        padding: 15px;
+        background: #f5fbf7;
+        border-radius: 10px;
+    }
+
+    .doctor-info-item span {
+        display: block;
+        color: #7b928e;
+        font-size: 11px;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+    }
+
+    .doctor-info-item strong {
+        color: #155e63;
+        font-size: 14px;
+    }
+
+    .quick-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    @media (max-width: 900px) {
+        .doctor-info-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .record-header {
+            flex-direction: column;
+        }
+
+        .record-details {
+            grid-template-columns: 1fr;
+        }
+
+        .record-detail.full-width {
+            grid-column: auto;
+        }
+
+        .doctor-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .quick-actions {
+            flex-direction: column;
+        }
+
+        .quick-actions .action-button {
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+    }
+</style>
+
+
+<!-- Page Introduction -->
+
+<div class="page-intro">
+
+    <h2>
+        Medical Records
+    </h2>
+
+    <p>
+        View and manage medical records created for your patients.
+    </p>
+
+</div>
+
+
+<!-- Statistics -->
+
+<section class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📋
+        </div>
+
+        <div>
+
+            <p>
+                My Medical Records
+            </p>
+
+            <h2>
+                {{ medical_records|length }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            👨‍⚕️
+        </div>
+
+        <div>
+
+            <p>
+                Doctor
+            </p>
+
+            <h2>
+                Dr.
+                {{ request.user.get_full_name|default:request.user.username }}
+            </h2>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Medical Records -->
+
+<section class="dashboard-card">
+
+    <div class="card-header">
+
+        <h2>
+            Patient Medical Records
+        </h2>
+
+        <span>
+            {{ medical_records|length }}
+            Record{{ medical_records|length|pluralize }}
+        </span>
+
+    </div>
+
+
+    {% if medical_records %}
+
+        <div class="record-list">
+
+            {% for record in medical_records %}
+
+                <div class="record-card">
+
+                    <!-- Record Header -->
+
+                    <div class="record-header">
+
+                        <div>
+
+                            <div class="patient-name">
+                                {{ record.patient.user.get_full_name|default:record.patient.user.username }}
+                            </div>
+
+                            <div class="record-date">
+                                Record Date:
+                                {{ record.record_date|date:"d M Y" }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Record Details -->
+
+                    <div class="record-details">
+
+                        <div class="record-detail">
+
+                            <span class="record-label">
+                                Diagnosis
+                            </span>
+
+                            <span class="record-value">
+
+                                {% if record.diagnosis %}
+                                    {{ record.diagnosis }}
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="record-detail">
+
+                            <span class="record-label">
+                                Symptoms
+                            </span>
+
+                            <span class="record-value">
+
+                                {% if record.symptoms %}
+                                    {{ record.symptoms }}
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="record-detail">
+
+                            <span class="record-label">
+                                Treatment
+                            </span>
+
+                            <span class="record-value">
+
+                                {% if record.treatment %}
+                                    {{ record.treatment }}
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="record-detail">
+
+                            <span class="record-label">
+                                Prescription
+                            </span>
+
+                            <span class="record-value">
+
+                                {% if record.prescription %}
+                                    {{ record.prescription }}
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="record-detail full-width">
+
+                            <span class="record-label">
+                                Notes
+                            </span>
+
+                            <span class="record-value">
+
+                                {% if record.notes %}
+                                    {{ record.notes }}
+                                {% else %}
+                                    No additional notes
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                        {% if record.appointment %}
+
+                            <div class="record-detail full-width">
+
+                                <span class="record-label">
+                                    Related Appointment
+                                </span>
+
+                                <span class="record-value">
+
+                                    {{ record.appointment.appointment_date|date:"d M Y" }}
+
+                                    at
+
+                                    {{ record.appointment.appointment_time|time:"h:i A" }}
+
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Actions -->
+
+                    <div class="record-actions">
+
+                        <a href="{% url 'edit_medical_record' record.id %}"
+                           class="action-button">
+
+                            Edit Record
+
+                        </a>
+
+
+                        <a href="{% url 'delete_medical_record' record.id %}"
+                           class="action-button delete-record-button">
+
+                            Delete Record
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                📋
+            </div>
+
+            <h3>
+                No Medical Records Found
+            </h3>
+
+            <p>
+                Medical records created by you will appear here.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- Doctor Information -->
+
+{% if doctor %}
+
+<section class="dashboard-card"
+         style="margin-top: 25px;">
+
+    <div class="card-header">
+
+        <h2>
+            Doctor Information
+        </h2>
+
+        <span>
+            Current Account
+        </span>
+
+    </div>
+
+
+    <div class="doctor-info-grid">
+
+        <div class="doctor-info-item">
+
+            <span>
+                Doctor
+            </span>
+
+            <strong>
+                Dr.
+                {{ doctor.user.get_full_name|default:doctor.user.username }}
+            </strong>
+
+        </div>
+
+
+        <div class="doctor-info-item">
+
+            <span>
+                Specialization
+            </span>
+
+            <strong>
+                {{ doctor.get_specialization_display }}
+            </strong>
+
+        </div>
+
+
+        <div class="doctor-info-item">
+
+            <span>
+                Qualification
+            </span>
+
+            <strong>
+                {{ doctor.qualification }}
+            </strong>
+
+        </div>
+
+
+        <div class="doctor-info-item">
+
+            <span>
+                Experience
+            </span>
+
+            <strong>
+                {{ doctor.experience }} years
+            </strong>
+
+        </div>
+
+
+        <div class="doctor-info-item">
+
+            <span>
+                Availability
+            </span>
+
+            {% if doctor.is_available %}
+
+                <strong class="status-approved">
+                    Available
+                </strong>
+
+            {% else %}
+
+                <strong>
+                    Not Available
+                </strong>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+<!-- Quick Actions -->
+
+<section class="dashboard-card"
+         style="margin-top: 25px;">
+
+    <div class="card-header">
+
+        <h2>
+            Quick Actions
+        </h2>
+
+        <span>
+            Doctor Portal
+        </span>
+
+    </div>
+
+
+    <div class="quick-actions">
+
+        <a href="{% url 'doctor_dashboard' %}"
+           class="action-button">
+
+            Dashboard
+
+        </a>
+
+
+        <a href="{% url 'doctor_appointments' %}"
+           class="action-button">
+
+            My Appointments
+
+        </a>
+
+
+        <a href="{% url 'doctor_patients' %}"
+           class="action-button">
+
+            My Patients
+
+        </a>
+
+
+        <a href="{% url 'add_medical_record' %}"
+           class="action-button">
+
+            Create Medical Record
+
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

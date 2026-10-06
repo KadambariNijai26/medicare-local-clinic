@@ -1,0 +1,561 @@
+
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    Medicare | Patients
+{% endblock %}
+
+{% block page_title %}
+    Patient Management
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .page-card {
+        background: #ffffff;
+        padding: 28px;
+        border-radius: 14px;
+        box-shadow: 0 7px 25px rgba(21, 94, 99, 0.08);
+    }
+
+
+    /* Top Section */
+
+    .page-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+
+    .page-title {
+        color: #155e63;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+
+    .add-button {
+        display: inline-block;
+        padding: 11px 18px;
+        border-radius: 8px;
+        background: #65c18c;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+
+    .add-button:hover {
+        background: #155e63;
+    }
+
+
+    /* Search */
+
+    .search-box {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+
+
+    .search-box input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 1px solid #cfe5dc;
+        border-radius: 8px;
+        outline: none;
+        font-size: 14px;
+    }
+
+
+    .search-box input:focus {
+        border-color: #65c18c;
+    }
+
+
+    .search-button {
+        border: none;
+        padding: 12px 22px;
+        border-radius: 8px;
+        background: #65c18c;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+
+    .search-button:hover {
+        background: #155e63;
+    }
+
+
+    /* Table */
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+
+    .patient-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+
+    .patient-table th {
+        text-align: left;
+        padding: 14px;
+        background: #e1f5ea;
+        color: #155e63;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+
+    .patient-table td {
+        padding: 14px;
+        border-bottom: 1px solid #e1eee8;
+        font-size: 13px;
+    }
+
+
+    .patient-table tr:hover {
+        background: #f5fbf8;
+    }
+
+
+    /* Status */
+
+    .status {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background: #e1f5ea;
+        color: #28734d;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+
+    .pending-status {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background: #fff4d6;
+        color: #a06a00;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+
+    /* Actions */
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+
+    .edit-button {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 6px;
+        background: #e1f5ea;
+        color: #155e63;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+
+    .edit-button:hover {
+        background: #65c18c;
+        color: #ffffff;
+    }
+
+
+    .approve-button {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 6px;
+        background: #65c18c;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+
+    .approve-button:hover {
+        background: #155e63;
+    }
+
+
+    .approved-label {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 6px;
+        background: #e1f5ea;
+        color: #28734d;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+
+    .delete-action-button {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 6px;
+        background: #fff0f0;
+        color: #c65b5b;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+
+    .delete-action-button:hover {
+        background: #c65b5b;
+        color: #ffffff;
+    }
+
+
+    /* Empty */
+
+    .empty-message {
+        text-align: center;
+        padding: 40px;
+        color: #789896;
+    }
+
+
+    /* Back Button */
+
+    .back-button {
+        display: inline-block;
+        margin-bottom: 20px;
+        text-decoration: none;
+        color: #155e63;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+
+    .back-button:hover {
+        color: #65c18c;
+    }
+
+
+    /* Responsive */
+
+    @media (max-width: 700px) {
+
+        .page-top {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+
+        .search-box {
+            flex-direction: column;
+        }
+
+
+        .search-button {
+            width: 100%;
+        }
+
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+    }
+
+</style>
+
+
+<!-- =====================================================
+     BACK TO DASHBOARD
+====================================================== -->
+
+<a href="{% url 'dashboard' %}"
+   class="back-button">
+
+    ← Back to Dashboard
+
+</a>
+
+
+<!-- =====================================================
+     PATIENT MANAGEMENT CARD
+====================================================== -->
+
+<div class="page-card">
+
+
+    <!-- TITLE + ADD PATIENT -->
+
+    <div class="page-top">
+
+        <div class="page-title">
+
+            Patient Records
+
+        </div>
+
+
+        <a href="{% url 'add_patient' %}"
+           class="add-button">
+
+            + Add Patient
+
+        </a>
+
+    </div>
+
+
+
+    <!-- =================================================
+         SEARCH
+    ================================================== -->
+
+    <form method="GET"
+          class="search-box">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search by name, username, email or phone..."
+            value="{{ search }}"
+        >
+
+
+        <button
+            type="submit"
+            class="search-button">
+
+            Search
+
+        </button>
+
+    </form>
+
+
+
+    <!-- =================================================
+         PATIENT TABLE
+    ================================================== -->
+
+    <div class="table-container">
+
+        <table class="patient-table">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Patient Name
+                    </th>
+
+                    <th>
+                        Username
+                    </th>
+
+                    <th>
+                        Email
+                    </th>
+
+                    <th>
+                        Phone
+                    </th>
+
+                    <th>
+                        Blood Group
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+                {% for patient in patients %}
+
+                <tr>
+
+
+                    <!-- Patient Name -->
+
+                    <td>
+
+                        <strong>
+                            {{ patient.user.get_full_name|default:patient.user.username }}
+                        </strong>
+
+                    </td>
+
+
+                    <!-- Username -->
+
+                    <td>
+                        {{ patient.user.username }}
+                    </td>
+
+
+                    <!-- Email -->
+
+                    <td>
+                        {{ patient.user.email|default:"Not provided" }}
+                    </td>
+
+
+                    <!-- Phone -->
+
+                    <td>
+                        {{ patient.phone|default:"Not provided" }}
+                    </td>
+
+
+                    <!-- Blood Group -->
+
+                    <td>
+                        {{ patient.blood_group|default:"Not provided" }}
+                    </td>
+
+
+                    <!-- Status -->
+
+                    <td>
+
+                        {% if patient.user.profile.is_approved %}
+
+                            <span class="status">
+                                Approved
+                            </span>
+
+                        {% else %}
+
+                            <span class="pending-status">
+                                Pending Approval
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- Actions -->
+
+                    <td>
+
+                        <div class="action-buttons">
+
+
+                            {% if not patient.user.profile.is_approved %}
+
+                                <a
+                                    href="{% url 'approve_patient' patient.id %}"
+                                    class="approve-button">
+
+                                    Approve
+
+                                </a>
+
+                            {% else %}
+
+                                <span class="approved-label">
+                                    Approved
+                                </span>
+
+                            {% endif %}
+
+
+                            <a
+                                href="{% url 'edit_patient' patient.id %}"
+                                class="edit-button">
+
+                                Edit
+
+                            </a>
+
+
+                            <a
+                                href="{% url 'delete_patient' patient.id %}"
+                                class="delete-action-button">
+
+                                Delete
+
+                            </a>
+
+
+                        </div>
+
+                    </td>
+
+
+                </tr>
+
+
+                {% empty %}
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="empty-message">
+
+                        No patients found.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<footer class="dashboard-footer">
+
+    © 2026 Medicare Local Clinic Management System
+
+</footer>
+
+{% endblock %}
+

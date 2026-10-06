@@ -1,0 +1,583 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}
+Medicare | Edit Patient
+{% endblock %}
+
+{% block page_title %}
+Edit Patient
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .form-card {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 25px rgba(21, 94, 99, 0.08);
+        max-width: 1000px;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+    }
+
+    .form-section h2 {
+        color: #155e63;
+        font-size: 18px;
+        margin-bottom: 18px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #dcefe5;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #155e63;
+        margin-bottom: 7px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #cfe5dc;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #234f50;
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #65c18c;
+        box-shadow: 0 0 0 3px rgba(101, 193, 140, 0.12);
+    }
+
+    .form-group input:disabled {
+        background: #eef5f1;
+        color: #78908a;
+        cursor: not-allowed;
+    }
+
+    .form-group textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .save-button,
+    .cancel-button {
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+    }
+
+    .save-button {
+        background: #65c18c;
+        color: #ffffff;
+    }
+
+    .save-button:hover {
+        background: #155e63;
+    }
+
+    .cancel-button {
+        background: #e1f5ea;
+        color: #155e63;
+    }
+
+    .cancel-button:hover {
+        background: #cfe9dc;
+    }
+
+    .back-button {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #155e63;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .back-button:hover {
+        color: #65c18c;
+    }
+
+    .info-box {
+        background: #eef9f3;
+        border-left: 4px solid #65c18c;
+        padding: 12px 15px;
+        margin-bottom: 25px;
+        border-radius: 6px;
+        color: #3e6660;
+        font-size: 13px;
+    }
+
+    @media (max-width: 700px) {
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full {
+            grid-column: auto;
+        }
+
+        .form-card {
+            padding: 20px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .save-button,
+        .cancel-button {
+            text-align: center;
+            width: 100%;
+        }
+
+    }
+
+</style>
+
+
+<!-- Back -->
+
+<a
+    href="{% url 'patient_list' %}"
+    class="back-button">
+
+    ← Back to Patient Management
+
+</a>
+
+
+<!-- Form -->
+
+<div class="form-card">
+
+    <div class="info-box">
+
+        Update the patient's information below.
+        The username cannot be changed from this page.
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <!-- ==================================================
+             ACCOUNT INFORMATION
+        =================================================== -->
+
+        <div class="form-section">
+
+            <h2>
+                Account Information
+            </h2>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        value="{{ patient.user.username }}"
+                        disabled
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ patient.user.email }}"
+                        autocomplete="email"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             PERSONAL INFORMATION
+        =================================================== -->
+
+        <div class="form-section">
+
+            <h2>
+                Personal Information
+            </h2>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        First Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="first_name"
+                        value="{{ patient.user.first_name }}"
+                        required
+                        autocomplete="given-name"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Last Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="last_name"
+                        value="{{ patient.user.last_name }}"
+                        autocomplete="family-name"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Date of Birth
+                    </label>
+
+                    <input
+                        type="date"
+                        name="date_of_birth"
+                        value="{{ patient.date_of_birth|date:'Y-m-d' }}"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Gender
+                    </label>
+
+                    <select name="gender">
+
+                        <option value="">
+                            Select Gender
+                        </option>
+
+                        <option
+                            value="male"
+                            {% if patient.gender == "male" %}
+                                selected
+                            {% endif %}
+                        >
+                            Male
+                        </option>
+
+                        <option
+                            value="female"
+                            {% if patient.gender == "female" %}
+                                selected
+                            {% endif %}
+                        >
+                            Female
+                        </option>
+
+                        <option
+                            value="other"
+                            {% if patient.gender == "other" %}
+                                selected
+                            {% endif %}
+                        >
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             CONTACT INFORMATION
+        =================================================== -->
+
+        <div class="form-section">
+
+            <h2>
+                Contact Information
+            </h2>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Phone
+                    </label>
+
+                    <input
+                        type="text"
+                        name="phone"
+                        value="{{ patient.phone }}"
+                        maxlength="15"
+                        autocomplete="tel"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Emergency Contact
+                    </label>
+
+                    <input
+                        type="text"
+                        name="emergency_contact"
+                        value="{{ patient.emergency_contact }}"
+                        maxlength="15"
+                    >
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Address
+                    </label>
+
+                    <textarea
+                        name="address"
+                        placeholder="Enter patient's complete address..."
+                    >{{ patient.address }}</textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             MEDICAL INFORMATION
+        =================================================== -->
+
+        <div class="form-section">
+
+            <h2>
+                Medical Information
+            </h2>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Blood Group
+                    </label>
+
+
+                    <select name="blood_group">
+
+                        <option value="">
+                            Select Blood Group
+                        </option>
+
+
+                        <option
+                            value="A+"
+                            {% if patient.blood_group == "A+" %}
+                                selected
+                            {% endif %}
+                        >
+                            A+
+                        </option>
+
+
+                        <option
+                            value="A-"
+                            {% if patient.blood_group == "A-" %}
+                                selected
+                            {% endif %}
+                        >
+                            A-
+                        </option>
+
+
+                        <option
+                            value="B+"
+                            {% if patient.blood_group == "B+" %}
+                                selected
+                            {% endif %}
+                        >
+                            B+
+                        </option>
+
+
+                        <option
+                            value="B-"
+                            {% if patient.blood_group == "B-" %}
+                                selected
+                            {% endif %}
+                        >
+                            B-
+                        </option>
+
+
+                        <option
+                            value="AB+"
+                            {% if patient.blood_group == "AB+" %}
+                                selected
+                            {% endif %}
+                        >
+                            AB+
+                        </option>
+
+
+                        <option
+                            value="AB-"
+                            {% if patient.blood_group == "AB-" %}
+                                selected
+                            {% endif %}
+                        >
+                            AB-
+                        </option>
+
+
+                        <option
+                            value="O+"
+                            {% if patient.blood_group == "O+" %}
+                                selected
+                            {% endif %}
+                        >
+                            O+
+                        </option>
+
+
+                        <option
+                            value="O-"
+                            {% if patient.blood_group == "O-" %}
+                                selected
+                            {% endif %}
+                        >
+                            O-
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Medical History
+                    </label>
+
+                    <textarea
+                        name="medical_history"
+                        placeholder="Enter relevant medical history..."
+                    >{{ patient.medical_history }}</textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==================================================
+             BUTTONS
+        =================================================== -->
+
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                class="save-button">
+
+                Save Changes
+
+            </button>
+
+
+            <a
+                href="{% url 'patient_list' %}"
+                class="cancel-button">
+
+                Cancel
+
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

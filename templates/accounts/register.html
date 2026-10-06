@@ -1,0 +1,631 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Medicare | Register</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3faf7;
+            color: #333;
+        }
+
+        .register-wrapper {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px;
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 650px;
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo-circle {
+            width: 55px;
+            height: 55px;
+            margin: 0 auto 10px;
+            border-radius: 50%;
+            background: #dff3ea;
+            color: #23835d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .brand-name {
+            text-align: center;
+            margin: 5px 0;
+            color: #23835d;
+        }
+
+        .brand-subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 8px;
+            background: #fff3cd;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #d5d5d5;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            background: white;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #23835d;
+        }
+
+        .role-section {
+            margin-bottom: 25px;
+        }
+
+        .role-section label {
+            color: #23835d;
+        }
+
+        .doctor-section {
+            display: none;
+            margin-top: 10px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #f5fbf8;
+            border: 1px solid #dcefe7;
+        }
+
+        .doctor-section h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #23835d;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        .register-btn {
+            width: 100%;
+            border: none;
+            padding: 13px;
+            border-radius: 9px;
+            background: #23835d;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .register-btn:hover {
+            background: #1d704f;
+        }
+
+        .approval-note {
+            margin-top: 18px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #f0f8f4;
+            color: #4d675c;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .login-section {
+            text-align: center;
+            margin-top: 22px;
+            color: #666;
+        }
+
+        .login-section a {
+            color: #23835d;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #999;
+        }
+
+        @media (max-width: 600px) {
+
+            .register-card {
+                padding: 25px 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="register-wrapper">
+
+    <div class="register-card">
+
+        <!-- Logo -->
+
+        <div class="logo-circle">
+            M
+        </div>
+
+
+        <!-- Brand -->
+
+        <h1 class="brand-name">
+            Medicare
+        </h1>
+
+        <p class="brand-subtitle">
+            Local Clinic Management System
+        </p>
+
+
+        <h2 class="form-title">
+            Create Your Account
+        </h2>
+
+
+        <!-- Messages -->
+
+        {% if messages %}
+
+            <div class="messages">
+
+                {% for message in messages %}
+
+                    <div class="message">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- Registration Form -->
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- Role -->
+
+            <div class="form-group role-section">
+
+                <label for="role">
+                    Register As
+                </label>
+
+                <select
+                    name="role"
+                    id="role"
+                    required>
+
+                    <option value="">
+                        Select your role
+                    </option>
+
+                    <option value="patient">
+                        Patient
+                    </option>
+
+                    <option value="doctor">
+                        Doctor
+                    </option>
+
+                    <option value="receptionist">
+                        Receptionist
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Basic Account Information -->
+
+            <div class="form-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter username"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="first_name">
+                    First Name
+                </label>
+
+                <input
+                    type="text"
+                    id="first_name"
+                    name="first_name"
+                    placeholder="Enter first name"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="last_name">
+                    Last Name
+                </label>
+
+                <input
+                    type="text"
+                    id="last_name"
+                    name="last_name"
+                    placeholder="Enter last name"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter email address"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="phone">
+                    Phone Number
+                </label>
+
+                <input
+                    type="text"
+                    id="phone"
+                    name="phone"
+                    placeholder="Enter phone number"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Create password"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="confirm_password">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    id="confirm_password"
+                    name="confirm_password"
+                    placeholder="Confirm password"
+                    required>
+
+            </div>
+
+
+            <!-- Doctor Information -->
+
+            <div
+                class="doctor-section"
+                id="doctor-section">
+
+                <h3>
+                    Doctor Information
+                </h3>
+
+
+                <div class="form-group">
+
+                    <label for="specialization">
+                        Specialization
+                    </label>
+
+                    <input
+                        type="text"
+                        id="specialization"
+                        name="specialization"
+                        placeholder="e.g. Cardiologist">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="qualification">
+                        Qualification
+                    </label>
+
+                    <input
+                        type="text"
+                        id="qualification"
+                        name="qualification"
+                        placeholder="e.g. MBBS, MD">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="experience">
+                        Experience (Years)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="experience"
+                        name="experience"
+                        min="0"
+                        placeholder="Enter years of experience">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="consultation_fee">
+                        Consultation Fee
+                    </label>
+
+                    <input
+                        type="number"
+                        id="consultation_fee"
+                        name="consultation_fee"
+                        min="0"
+                        step="0.01"
+                        placeholder="Enter consultation fee">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="available_days">
+                        Available Days
+                    </label>
+
+                    <input
+                        type="text"
+                        id="available_days"
+                        name="available_days"
+                        placeholder="e.g. Monday, Wednesday, Friday">
+
+                </div>
+
+
+                <div class="form-group checkbox-group">
+
+                    <input
+                        type="checkbox"
+                        id="is_available"
+                        name="is_available"
+                        value="on">
+
+                    <label for="is_available">
+                        Currently Available
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- Approval Information -->
+
+            <div class="approval-note">
+
+                Your registration will be sent to the clinic
+                administrator for approval. You will be able to
+                login only after your account is approved.
+
+            </div>
+
+
+            <!-- Submit -->
+
+            <button
+                type="submit"
+                class="register-btn">
+
+                Create Account
+
+            </button>
+
+        </form>
+
+
+        <!-- Login -->
+
+        <div class="login-section">
+
+            Already have an account?
+
+            <a href="{% url 'login' %}">
+                Login here
+            </a>
+
+        </div>
+
+
+        <div class="login-footer">
+
+            Secure Clinic Management System
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     Doctor Role Script
+========================== -->
+
+<script>
+
+    const roleSelect = document.getElementById("role");
+
+    const doctorSection =
+        document.getElementById("doctor-section");
+
+    const specialization =
+        document.getElementById("specialization");
+
+    const qualification =
+        document.getElementById("qualification");
+
+    const experience =
+        document.getElementById("experience");
+
+    const consultationFee =
+        document.getElementById("consultation_fee");
+
+    const availableDays =
+        document.getElementById("available_days");
+
+
+    function toggleDoctorFields() {
+
+        if (roleSelect.value === "doctor") {
+
+            doctorSection.style.display = "block";
+
+            specialization.required = true;
+            qualification.required = true;
+            experience.required = true;
+            consultationFee.required = true;
+            availableDays.required = true;
+
+        } else {
+
+            doctorSection.style.display = "none";
+
+            specialization.required = false;
+            qualification.required = false;
+            experience.required = false;
+            consultationFee.required = false;
+            availableDays.required = false;
+
+        }
+
+    }
+
+
+    roleSelect.addEventListener(
+        "change",
+        toggleDoctorFields
+    );
+
+
+    toggleDoctorFields();
+
+</script>
+
+</body>
+
+</html>

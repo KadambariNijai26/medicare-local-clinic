@@ -1,0 +1,662 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    Medicare | Patient Dashboard
+{% endblock %}
+
+{% block page_title %}
+    Patient Dashboard
+{% endblock %}
+
+{% block content %}
+
+
+<!-- =====================================================
+     STATISTICS
+====================================================== -->
+
+<section class="stats-grid">
+
+
+    <!-- Total Appointments -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📅
+        </div>
+
+        <div>
+
+            <p>
+                Total Appointments
+            </p>
+
+            <h2>
+                {{ total_appointments }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- Upcoming Appointments -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🕒
+        </div>
+
+        <div>
+
+            <p>
+                Upcoming Appointments
+            </p>
+
+            <h2>
+                {{ upcoming_appointments|length }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- Medical Records -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📋
+        </div>
+
+        <div>
+
+            <p>
+                Medical Records
+            </p>
+
+            <h2>
+                {{ total_medical_records }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- Prescriptions -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            💊
+        </div>
+
+        <div>
+
+            <p>
+                Prescriptions
+            </p>
+
+            <h2>
+                {{ total_prescriptions }}
+            </h2>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     APPOINTMENTS + PATIENT INFORMATION
+====================================================== -->
+
+<section class="dashboard-grid">
+
+
+    <!-- UPCOMING APPOINTMENTS -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <h2>
+                Upcoming Appointments
+            </h2>
+
+            <span>
+                Next Visits
+            </span>
+
+        </div>
+
+
+        {% if upcoming_appointments %}
+
+            <div class="system-info">
+
+                {% for appointment in upcoming_appointments %}
+
+                    <div>
+
+                        <span>
+                            Doctor
+                        </span>
+
+                        <strong>
+
+                            Dr.
+                            {{ appointment.doctor.user.get_full_name|default:appointment.doctor.user.username }}
+
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Specialization
+                        </span>
+
+                        <strong>
+                            {{ appointment.doctor.get_specialization_display }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Date
+                        </span>
+
+                        <strong>
+                            {{ appointment.appointment_date|date:"d M Y" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Time
+                        </span>
+
+                        <strong>
+                            {{ appointment.appointment_time|time:"h:i A" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Status
+                        </span>
+
+                        <strong class="status-approved">
+
+                            {{ appointment.get_status_display }}
+
+                        </strong>
+
+                    </div>
+
+
+                    {% if not forloop.last %}
+
+                        <hr style="
+                            border: 0;
+                            border-top: 1px solid #e5eeee;
+                            margin: 15px 0;
+                        ">
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="system-info">
+
+                <div>
+
+                    <span>
+                        Appointments
+                    </span>
+
+                    <strong>
+                        No upcoming appointments
+                    </strong>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <div class="quick-actions">
+
+            <a href="{% url 'patient_appointments' %}"
+               class="action-button">
+
+                View Appointments
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- PATIENT INFORMATION -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <h2>
+                My Information
+            </h2>
+
+            <span>
+                Account Details
+            </span>
+
+        </div>
+
+
+        <div class="system-info">
+
+
+            <div>
+
+                <span>
+                    Username
+                </span>
+
+                <strong>
+                    {{ request.user.username }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Full Name
+                </span>
+
+                <strong>
+                    {{ request.user.get_full_name|default:"Not provided" }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Email
+                </span>
+
+                <strong>
+                    {{ request.user.email|default:"Not provided" }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Phone
+                </span>
+
+                <strong>
+                    {{ patient.phone|default:"Not provided" }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Blood Group
+                </span>
+
+                <strong>
+                    {{ patient.blood_group|default:"Not provided" }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Gender
+                </span>
+
+                <strong>
+                    {{ patient.get_gender_display|default:"Not provided" }}
+                </strong>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Account Status
+                </span>
+
+                <strong class="status-approved">
+                    Approved
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     MEDICAL RECORDS PREVIEW
+====================================================== -->
+
+<section class="dashboard-card"
+         style="margin-bottom: 25px;">
+
+    <div class="card-header">
+
+        <h2>
+            Recent Medical Records
+        </h2>
+
+        <span>
+            Latest Records
+        </span>
+
+    </div>
+
+
+    {% if medical_records %}
+
+        <div class="system-info">
+
+            {% for record in medical_records %}
+
+
+                <div>
+
+                    <span>
+                        Diagnosis
+                    </span>
+
+                    <strong>
+                        {{ record.diagnosis }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Doctor
+                    </span>
+
+                    <strong>
+
+                        {% if record.doctor %}
+
+                            Dr.
+                            {{ record.doctor.user.get_full_name|default:record.doctor.user.username }}
+
+                        {% else %}
+
+                            Not Assigned
+
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Record Date
+                    </span>
+
+                    <strong>
+                        {{ record.record_date|date:"d M Y" }}
+                    </strong>
+
+                </div>
+
+
+                {% if record.symptoms %}
+
+                    <div>
+
+                        <span>
+                            Symptoms
+                        </span>
+
+                        <strong>
+                            {{ record.symptoms }}
+                        </strong>
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if record.treatment %}
+
+                    <div>
+
+                        <span>
+                            Treatment
+                        </span>
+
+                        <strong>
+                            {{ record.treatment }}
+                        </strong>
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if record.prescription %}
+
+                    <div>
+
+                        <span>
+                            Prescription
+                        </span>
+
+                        <strong>
+                            {{ record.prescription }}
+                        </strong>
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if not forloop.last %}
+
+                    <hr style="
+                        border: 0;
+                        border-top: 1px solid #e5eeee;
+                        margin: 15px 0;
+                    ">
+
+                {% endif %}
+
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="system-info">
+
+            <div>
+
+                <span>
+                    Medical Records
+                </span>
+
+                <strong>
+                    No medical records available
+                </strong>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+
+
+<!-- =====================================================
+     PATIENT SERVICES
+====================================================== -->
+
+<section class="dashboard-card">
+
+    <div class="card-header">
+
+        <h2>
+            Patient Services
+        </h2>
+
+        <span>
+            Quick Access
+        </span>
+
+    </div>
+
+
+    <div class="quick-actions">
+
+
+        <a href="{% url 'patient_appointments' %}"
+           class="action-button">
+
+            View Appointments
+
+        </a>
+
+
+        <a href="{% url 'patient_medical_records' %}"
+           class="action-button">
+
+            Medical Records
+
+        </a>
+
+
+        <a href="#prescriptions"
+           class="action-button">
+
+            View Prescriptions
+
+        </a>
+
+
+        <a href="#patient-information"
+           class="action-button">
+
+            My Profile
+
+        </a>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     BILLING
+====================================================== -->
+
+<section class="dashboard-card"
+         id="bills"
+         style="margin-top: 25px;">
+
+    <div class="card-header">
+
+        <h2>
+            Billing
+        </h2>
+
+        <span>
+            Coming Soon
+        </span>
+
+    </div>
+
+
+    <div class="system-info">
+
+        <div>
+
+            <span>
+                Pending Bills
+            </span>
+
+            <strong>
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<footer class="dashboard-footer">
+
+    © 2026 Medicare Local Clinic Management System
+
+</footer>
+
+{% endblock %}

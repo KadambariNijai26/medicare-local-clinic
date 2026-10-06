@@ -1,0 +1,364 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}
+Delete Medical Record | Medicare
+{% endblock %}
+
+{% block page_title %}
+Delete Medical Record
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .delete-card {
+        max-width: 650px;
+        margin: 10px auto 30px;
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 5px 25px rgba(31, 91, 76, 0.08);
+        border: 1px solid #e1eee9;
+    }
+
+    .warning-icon {
+        width: 65px;
+        height: 65px;
+        margin: 0 auto 22px;
+        border-radius: 50%;
+        background: #fff1f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #d95353;
+        font-size: 30px;
+    }
+
+    .delete-card h2 {
+        text-align: center;
+        color: #31584f;
+        font-size: 23px;
+        margin-bottom: 12px;
+    }
+
+    .description {
+        text-align: center;
+        color: #71827d;
+        font-size: 14px;
+        line-height: 1.7;
+        margin-bottom: 28px;
+    }
+
+    .record-info {
+        background: #f3faf7;
+        border: 1px solid #d9ebe5;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 28px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 11px 0;
+        border-bottom: 1px solid #dfebe7;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        color: #6c837c;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .info-value {
+        color: #294a43;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: right;
+    }
+
+    .diagnosis {
+        max-width: 350px;
+        word-break: break-word;
+    }
+
+    .warning {
+        background: #fff7e5;
+        border: 1px solid #f0dfb5;
+        color: #795f20;
+        border-radius: 10px;
+        padding: 14px 16px;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 28px;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .cancel-btn {
+        text-decoration: none;
+        background: #edf3f1;
+        color: #527068;
+        padding: 12px 25px;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .cancel-btn:hover {
+        background: #dfeae7;
+    }
+
+    .delete-form {
+        margin: 0;
+    }
+
+    .delete-btn {
+        border: none;
+        background: #d95353;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .delete-btn:hover {
+        background: #bd4141;
+    }
+
+    @media (max-width: 650px) {
+
+        .delete-card {
+            padding: 25px 20px;
+        }
+
+        .info-row {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-value {
+            text-align: left;
+        }
+
+        .diagnosis {
+            max-width: 100%;
+        }
+
+        .actions {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .cancel-btn,
+        .delete-form,
+        .delete-btn {
+            width: 100%;
+        }
+
+        .cancel-btn {
+            text-align: center;
+            display: block;
+        }
+    }
+</style>
+
+
+<!-- Page Introduction -->
+
+<div style="margin-bottom: 25px;">
+
+    <p style="color: #718b84; font-size: 14px; margin-top: 5px;">
+        Review the record before permanently deleting it.
+    </p>
+
+</div>
+
+
+<!-- Delete Card -->
+
+<div class="delete-card">
+
+    <!-- Warning Icon -->
+
+    <div class="warning-icon">
+        ⚠
+    </div>
+
+
+    <h2>
+        Delete this medical record?
+    </h2>
+
+
+    <p class="description">
+        You are about to permanently delete this medical record.
+        This action cannot be undone.
+    </p>
+
+
+    <!-- Record Information -->
+
+    <div class="record-info">
+
+        <div class="info-row">
+
+            <span class="info-label">
+                Patient
+            </span>
+
+            <span class="info-value">
+                {{ record.patient.user.get_full_name|default:record.patient.user.username }}
+            </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+            <span class="info-label">
+                Doctor
+            </span>
+
+            <span class="info-value">
+
+                {% if record.doctor %}
+
+                    Dr.
+                    {{ record.doctor.user.get_full_name|default:record.doctor.user.username }}
+
+                {% else %}
+
+                    Not Assigned
+
+                {% endif %}
+
+            </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+            <span class="info-label">
+                Record Date
+            </span>
+
+            <span class="info-value">
+                {{ record.record_date|date:"d M Y" }}
+            </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+            <span class="info-label">
+                Diagnosis
+            </span>
+
+            <span class="info-value diagnosis">
+                {{ record.diagnosis }}
+            </span>
+
+        </div>
+
+
+        {% if record.appointment %}
+
+            <div class="info-row">
+
+                <span class="info-label">
+                    Appointment
+                </span>
+
+                <span class="info-value">
+
+                    {{ record.appointment.appointment_date|date:"d M Y" }}
+
+                    at
+
+                    {{ record.appointment.appointment_time|time:"h:i A" }}
+
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Warning -->
+
+    <div class="warning">
+
+        <strong>Warning:</strong>
+
+        Deleting this record will permanently remove its
+        diagnosis, symptoms, prescription, treatment and
+        notes from the system.
+
+    </div>
+
+
+    <!-- Actions -->
+
+    <div class="actions">
+
+        {% if request.user.profile.role == 'doctor' %}
+
+            <a
+                href="{% url 'doctor_patient_medical_records' record.patient.id %}"
+                class="cancel-btn"
+            >
+                Cancel
+            </a>
+
+        {% else %}
+
+            <a
+                href="{% url 'medical_record_list' %}"
+                class="cancel-btn"
+            >
+                Cancel
+            </a>
+
+        {% endif %}
+
+
+        <form
+            method="POST"
+            class="delete-form"
+        >
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="delete-btn"
+            >
+                Delete Medical Record
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

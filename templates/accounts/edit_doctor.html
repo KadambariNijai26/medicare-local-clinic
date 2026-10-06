@@ -1,0 +1,707 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Medicare | Edit Doctor{% endblock %}
+
+{% block page_title %}Edit Doctor{% endblock %}
+
+{% block content %}
+
+<style>
+    .doctor-form-page {
+        width: 100%;
+    }
+
+    .form-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .form-top h2 {
+        margin: 0;
+        color: #164e43;
+        font-size: 24px;
+    }
+
+    .form-top p {
+        margin: 6px 0 0;
+        color: #6b8881;
+        font-size: 14px;
+    }
+
+    .back-button {
+        text-decoration: none;
+        background: #edf6f3;
+        color: #35675c;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .back-button:hover {
+        background: #dfeee9;
+        color: #24594e;
+    }
+
+    .form-card {
+        background: white;
+        border: 1px solid #dcece7;
+        border-radius: 14px;
+        padding: 28px;
+        box-shadow: 0 4px 15px rgba(30, 80, 70, 0.04);
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+    }
+
+    .form-section:last-of-type {
+        margin-bottom: 10px;
+    }
+
+    .section-title {
+        color: #176b5b;
+        font-size: 17px;
+        font-weight: 700;
+        margin: 0 0 18px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e4efeb;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        margin-bottom: 7px;
+        color: #365b53;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .required {
+        color: #c95a5a;
+    }
+
+    .form-control {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 11px 13px;
+        border: 1px solid #cfe2dc;
+        border-radius: 8px;
+        background: white;
+        color: #294f47;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .form-control:focus {
+        border-color: #187b68;
+        box-shadow: 0 0 0 3px rgba(24, 123, 104, 0.08);
+    }
+
+    .form-control:disabled {
+        background: #edf3f1;
+        color: #7a8983;
+        cursor: not-allowed;
+    }
+
+    select.form-control {
+        cursor: pointer;
+    }
+
+    .help-text {
+        margin-top: 5px;
+        color: #80958f;
+        font-size: 12px;
+    }
+
+    .availability-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 43px;
+        padding: 10px 13px;
+        background: #f4faf7;
+        border: 1px solid #cfe2dc;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    .availability-box input {
+        width: 17px;
+        height: 17px;
+        accent-color: #187b68;
+        cursor: pointer;
+    }
+
+    .availability-box label {
+        margin: 0;
+        cursor: pointer;
+        color: #365b53;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .messages {
+        margin-bottom: 20px;
+    }
+
+    .message {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .message.success {
+        background: #e5f6ed;
+        color: #287149;
+        border: 1px solid #c8e8d7;
+    }
+
+    .message.error {
+        background: #fbeaea;
+        color: #a54848;
+        border: 1px solid #efd0d0;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding-top: 22px;
+        border-top: 1px solid #e4efeb;
+    }
+
+    .cancel-button,
+    .save-button {
+        padding: 11px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .cancel-button {
+        background: #edf6f3;
+        color: #35675c;
+    }
+
+    .cancel-button:hover {
+        background: #dfeee9;
+        color: #24594e;
+    }
+
+    .save-button {
+        background: #187b68;
+        color: white;
+    }
+
+    .save-button:hover {
+        background: #126553;
+    }
+
+    @media (max-width: 700px) {
+
+        .form-top {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .back-button {
+            width: 100%;
+            text-align: center;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full-width {
+            grid-column: auto;
+        }
+
+        .form-card {
+            padding: 20px;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .cancel-button,
+        .save-button {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+
+<div class="doctor-form-page">
+
+    <!-- PAGE HEADER -->
+
+    <div class="form-top">
+
+        <div>
+
+            <h2>
+                Edit Doctor
+            </h2>
+
+            <p>
+                Update the doctor's professional and contact information.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'doctor_list' %}"
+            class="back-button"
+        >
+            ← Back to Doctors
+        </a>
+
+    </div>
+
+
+    <!-- MESSAGES -->
+
+    {% if messages %}
+
+        <div class="messages">
+
+            {% for message in messages %}
+
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- FORM -->
+
+    <div class="form-card">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- ACCOUNT INFORMATION -->
+
+            <div class="form-section">
+
+                <h3 class="section-title">
+                    Account Information
+                </h3>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="username">
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            id="username"
+                            class="form-control"
+                            value="{{ doctor.user.username }}"
+                            disabled
+                        >
+
+                        <span class="help-text">
+                            Username cannot be changed.
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-control"
+                            value="{{ doctor.user.email }}"
+                            placeholder="doctor@example.com"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PERSONAL INFORMATION -->
+
+            <div class="form-section">
+
+                <h3 class="section-title">
+                    Personal Information
+                </h3>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="first_name">
+
+                            First Name
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="first_name"
+                            name="first_name"
+                            class="form-control"
+                            value="{{ doctor.user.first_name }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="last_name">
+                            Last Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="last_name"
+                            name="last_name"
+                            class="form-control"
+                            value="{{ doctor.user.last_name }}"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PROFESSIONAL INFORMATION -->
+
+            <div class="form-section">
+
+                <h3 class="section-title">
+                    Professional Information
+                </h3>
+
+
+                <div class="form-grid">
+
+
+                    <!-- SPECIALIZATION -->
+
+                    <div class="form-group">
+
+                        <label for="specialization">
+
+                            Specialization
+                            <span class="required">*</span>
+
+                        </label>
+
+
+                        <select
+                            id="specialization"
+                            name="specialization"
+                            class="form-control"
+                            required
+                        >
+
+                            <option
+                                value="general"
+                                {% if doctor.specialization == "general" %}selected{% endif %}
+                            >
+                                General Physician
+                            </option>
+
+                            <option
+                                value="cardiology"
+                                {% if doctor.specialization == "cardiology" %}selected{% endif %}
+                            >
+                                Cardiologist
+                            </option>
+
+                            <option
+                                value="dermatology"
+                                {% if doctor.specialization == "dermatology" %}selected{% endif %}
+                            >
+                                Dermatologist
+                            </option>
+
+                            <option
+                                value="orthopedic"
+                                {% if doctor.specialization == "orthopedic" %}selected{% endif %}
+                            >
+                                Orthopedic
+                            </option>
+
+                            <option
+                                value="pediatrician"
+                                {% if doctor.specialization == "pediatrician" %}selected{% endif %}
+                            >
+                                Pediatrician
+                            </option>
+
+                            <option
+                                value="gynecology"
+                                {% if doctor.specialization == "gynecology" %}selected{% endif %}
+                            >
+                                Gynecologist
+                            </option>
+
+                            <option
+                                value="dentist"
+                                {% if doctor.specialization == "dentist" %}selected{% endif %}
+                            >
+                                Dentist
+                            </option>
+
+                            <option
+                                value="neurology"
+                                {% if doctor.specialization == "neurology" %}selected{% endif %}
+                            >
+                                Neurologist
+                            </option>
+
+                            <option
+                                value="other"
+                                {% if doctor.specialization == "other" %}selected{% endif %}
+                            >
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- QUALIFICATION -->
+
+                    <div class="form-group">
+
+                        <label for="qualification">
+
+                            Qualification
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="qualification"
+                            name="qualification"
+                            class="form-control"
+                            value="{{ doctor.qualification }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EXPERIENCE -->
+
+                    <div class="form-group">
+
+                        <label for="experience">
+                            Experience
+                        </label>
+
+                        <input
+                            type="number"
+                            id="experience"
+                            name="experience"
+                            class="form-control"
+                            min="0"
+                            value="{{ doctor.experience }}"
+                        >
+
+                        <span class="help-text">
+                            Experience in years.
+                        </span>
+
+                    </div>
+
+
+                    <!-- CONSULTATION FEE -->
+
+                    <div class="form-group">
+
+                        <label for="consultation_fee">
+                            Consultation Fee
+                        </label>
+
+                        <input
+                            type="number"
+                            id="consultation_fee"
+                            name="consultation_fee"
+                            class="form-control"
+                            min="0"
+                            step="0.01"
+                            value="{{ doctor.consultation_fee }}"
+                        >
+
+                        <span class="help-text">
+                            Consultation fee in ₹.
+                        </span>
+
+                    </div>
+
+
+                    <!-- AVAILABLE DAYS -->
+
+                    <div class="form-group full-width">
+
+                        <label for="available_days">
+                            Available Days
+                        </label>
+
+                        <input
+                            type="text"
+                            id="available_days"
+                            name="available_days"
+                            class="form-control"
+                            value="{{ doctor.available_days }}"
+                            placeholder="e.g. Monday, Wednesday, Friday"
+                        >
+
+                    </div>
+
+
+                    <!-- DOCTOR STATUS -->
+
+                    <div class="form-group full-width">
+
+                        <label>
+                            Doctor Status
+                        </label>
+
+
+                        <div class="availability-box">
+
+                            <input
+                                type="checkbox"
+                                id="is_available"
+                                name="is_available"
+                                {% if doctor.is_available %}checked{% endif %}
+                            >
+
+                            <label for="is_available">
+                                Doctor is currently available for appointments
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTACT INFORMATION -->
+
+            <div class="form-section">
+
+                <h3 class="section-title">
+                    Contact Information
+                </h3>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="phone">
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="text"
+                            id="phone"
+                            name="phone"
+                            class="form-control"
+                            maxlength="15"
+                            value="{{ doctor.phone }}"
+                            placeholder="Enter phone number"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="form-actions">
+
+                <a
+                    href="{% url 'doctor_list' %}"
+                    class="cancel-button"
+                >
+                    Cancel
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="save-button"
+                >
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

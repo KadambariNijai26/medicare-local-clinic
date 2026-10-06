@@ -1,0 +1,287 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Delete Appointment | Medicare{% endblock %}
+
+{% block page_title %}Delete Appointment{% endblock %}
+
+{% block content %}
+
+<style>
+    .delete-page {
+        min-height: calc(100vh - 160px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 0;
+    }
+
+    .delete-card {
+        width: 100%;
+        max-width: 650px;
+        background: white;
+        border-radius: 18px;
+        padding: 38px;
+        box-shadow: 0 8px 30px rgba(0, 70, 55, 0.08);
+        text-align: center;
+    }
+
+    .warning-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        background: #fdeaea;
+        color: #c04c4c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    .delete-card h2 {
+        color: #294c43;
+        font-size: 25px;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        color: #71857f;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 25px;
+    }
+
+    .appointment-info {
+        background: #f5faf8;
+        border: 1px solid #dcebe6;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 25px;
+        text-align: left;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 10px 0;
+        border-bottom: 1px solid #e5efec;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        color: #7b9089;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .info-value {
+        color: #365850;
+        font-size: 13px;
+        font-weight: 600;
+        text-align: right;
+    }
+
+    .warning {
+        background: #fff7e8;
+        border: 1px solid #f1dfb8;
+        color: #9a701d;
+        padding: 13px 15px;
+        border-radius: 9px;
+        font-size: 12px;
+        line-height: 1.5;
+        margin-bottom: 25px;
+    }
+
+    .button-area {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .btn {
+        border: none;
+        text-decoration: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .cancel-btn {
+        background: #edf4f1;
+        color: #47655d;
+    }
+
+    .cancel-btn:hover {
+        background: #e1ebe7;
+    }
+
+    .delete-btn {
+        background: #c04c4c;
+        color: white;
+    }
+
+    .delete-btn:hover {
+        background: #a83f3f;
+    }
+
+    @media (max-width: 650px) {
+        .delete-card {
+            padding: 28px 20px;
+        }
+
+        .info-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
+        .info-value {
+            text-align: left;
+        }
+
+        .button-area {
+            flex-direction: column-reverse;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="delete-page">
+
+    <div class="delete-card">
+
+        <div class="warning-icon">
+            !
+        </div>
+
+        <h2>Delete Appointment?</h2>
+
+        <p class="subtitle">
+            Are you sure you want to delete this appointment?
+            This action cannot be undone.
+        </p>
+
+
+        <!-- APPOINTMENT INFORMATION -->
+
+        <div class="appointment-info">
+
+            <div class="info-row">
+                <span class="info-label">
+                    Patient
+                </span>
+
+                <span class="info-value">
+                    {{ appointment.patient.user.get_full_name|default:appointment.patient.user.username }}
+                </span>
+            </div>
+
+
+            <div class="info-row">
+                <span class="info-label">
+                    Doctor
+                </span>
+
+                <span class="info-value">
+                    Dr. {{ appointment.doctor.user.get_full_name|default:appointment.doctor.user.username }}
+                </span>
+            </div>
+
+
+            <div class="info-row">
+                <span class="info-label">
+                    Specialization
+                </span>
+
+                <span class="info-value">
+                    {{ appointment.doctor.get_specialization_display }}
+                </span>
+            </div>
+
+
+            <div class="info-row">
+                <span class="info-label">
+                    Date
+                </span>
+
+                <span class="info-value">
+                    {{ appointment.appointment_date|date:"d M Y" }}
+                </span>
+            </div>
+
+
+            <div class="info-row">
+                <span class="info-label">
+                    Time
+                </span>
+
+                <span class="info-value">
+                    {{ appointment.appointment_time|time:"h:i A" }}
+                </span>
+            </div>
+
+
+            <div class="info-row">
+                <span class="info-label">
+                    Status
+                </span>
+
+                <span class="info-value">
+                    {{ appointment.get_status_display }}
+                </span>
+            </div>
+
+        </div>
+
+
+        <!-- WARNING -->
+
+        <div class="warning">
+            ⚠ Deleting this appointment will permanently remove its
+            information from the clinic system.
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <div class="button-area">
+
+            <a
+                href="{% url 'appointment_list' %}"
+                class="btn cancel-btn"
+            >
+                Cancel
+            </a>
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn delete-btn"
+                >
+                    Yes, Delete Appointment
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

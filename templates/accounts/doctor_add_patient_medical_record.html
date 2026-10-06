@@ -1,0 +1,481 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}
+Medicare | Add Medical Record
+{% endblock %}
+
+{% block page_title %}
+Add Medical Record
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #345;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #d8e5e5;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        box-sizing: border-box;
+        background: #ffffff;
+    }
+
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #6ab7aa;
+        box-shadow: 0 0 0 3px rgba(106, 183, 170, 0.12);
+    }
+
+    .required {
+        color: #c94b4b;
+    }
+
+    .form-help {
+        margin-top: 6px;
+        font-size: 12px;
+        color: #7b8b8b;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 25px;
+    }
+
+    .cancel-button {
+        display: inline-block;
+        padding: 11px 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        background: #f2f6f6;
+        color: #506060;
+        font-weight: 600;
+    }
+
+    .cancel-button:hover {
+        background: #e7eeee;
+    }
+
+    .patient-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .patient-summary-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .patient-summary-item span {
+        font-size: 13px;
+        color: #7b8b8b;
+    }
+
+    .patient-summary-item strong {
+        color: #263b3b;
+    }
+
+    .doctor-notice {
+        padding: 14px 16px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        background: #eef8f6;
+        color: #35665e;
+        border: 1px solid #d8ece8;
+    }
+
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full-width {
+            grid-column: auto;
+        }
+
+        .patient-summary {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<!-- Patient Information -->
+
+<section class="dashboard-card">
+
+    <div class="card-header">
+
+        <h2>
+            Patient Information
+        </h2>
+
+        <span>
+            Selected Patient
+        </span>
+
+    </div>
+
+    <div class="patient-summary">
+
+        <div class="patient-summary-item">
+
+            <span>
+                Full Name
+            </span>
+
+            <strong>
+                {{ patient.user.get_full_name|default:patient.user.username }}
+            </strong>
+
+        </div>
+
+
+        <div class="patient-summary-item">
+
+            <span>
+                Username
+            </span>
+
+            <strong>
+                {{ patient.user.username }}
+            </strong>
+
+        </div>
+
+
+        <div class="patient-summary-item">
+
+            <span>
+                Phone
+            </span>
+
+            <strong>
+                {{ patient.phone|default:"Not provided" }}
+            </strong>
+
+        </div>
+
+
+        <div class="patient-summary-item">
+
+            <span>
+                Blood Group
+            </span>
+
+            <strong>
+                {{ patient.blood_group|default:"Not provided" }}
+            </strong>
+
+        </div>
+
+
+        <div class="patient-summary-item">
+
+            <span>
+                Gender
+            </span>
+
+            <strong>
+                {{ patient.get_gender_display|default:"Not provided" }}
+            </strong>
+
+        </div>
+
+
+        <div class="patient-summary-item">
+
+            <span>
+                Doctor
+            </span>
+
+            <strong>
+                Dr. {{ doctor.user.get_full_name|default:doctor.user.username }}
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Medical Record Form -->
+
+<section class="dashboard-card"
+         style="margin-top: 25px;">
+
+    <div class="card-header">
+
+        <h2>
+            Medical Record Details
+        </h2>
+
+        <span>
+            New Record
+        </span>
+
+    </div>
+
+
+    <div class="doctor-notice">
+
+        This medical record will be created for
+
+        <strong>
+            {{ patient.user.get_full_name|default:patient.user.username }}
+        </strong>
+
+        under your doctor account.
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <div class="form-grid">
+
+
+            <!-- Related Appointment -->
+
+            <div class="form-group full-width">
+
+                <label for="appointment">
+                    Related Appointment
+                </label>
+
+                <select name="appointment"
+                        id="appointment">
+
+                    <option value="">
+                        -- Select Appointment (Optional) --
+                    </option>
+
+                    {% for appointment in appointments %}
+
+                        <option value="{{ appointment.id }}">
+
+                            {{ appointment.appointment_date|date:"d M Y" }}
+
+                            -
+
+                            {{ appointment.appointment_time|time:"h:i A" }}
+
+                            -
+
+                            {{ appointment.get_status_display }}
+
+                            {% if appointment.reason %}
+                                - {{ appointment.reason|truncatechars:50 }}
+                            {% endif %}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <span class="form-help">
+                    Select the appointment related to this medical record.
+                </span>
+
+            </div>
+
+
+            <!-- Diagnosis -->
+
+            <div class="form-group full-width">
+
+                <label for="diagnosis">
+
+                    Diagnosis
+                    <span class="required">*</span>
+
+                </label>
+
+                <textarea name="diagnosis"
+                          id="diagnosis"
+                          placeholder="Enter the patient's diagnosis..."
+                          required></textarea>
+
+                <span class="form-help">
+                    Diagnosis is required.
+                </span>
+
+            </div>
+
+
+            <!-- Symptoms -->
+
+            <div class="form-group full-width">
+
+                <label for="symptoms">
+                    Symptoms
+                </label>
+
+                <textarea name="symptoms"
+                          id="symptoms"
+                          placeholder="Describe the patient's symptoms..."></textarea>
+
+            </div>
+
+
+            <!-- Treatment -->
+
+            <div class="form-group">
+
+                <label for="treatment">
+                    Treatment
+                </label>
+
+                <textarea name="treatment"
+                          id="treatment"
+                          placeholder="Enter treatment details..."></textarea>
+
+            </div>
+
+
+            <!-- Prescription -->
+
+            <div class="form-group">
+
+                <label for="prescription">
+                    Prescription
+                </label>
+
+                <textarea name="prescription"
+                          id="prescription"
+                          placeholder="Enter prescribed medicines and instructions..."></textarea>
+
+            </div>
+
+
+            <!-- Notes -->
+
+            <div class="form-group full-width">
+
+                <label for="notes">
+                    Additional Notes
+                </label>
+
+                <textarea name="notes"
+                          id="notes"
+                          placeholder="Enter any additional clinical notes..."></textarea>
+
+            </div>
+
+        </div>
+
+
+        <!-- Form Actions -->
+
+        <div class="form-actions">
+
+            <button type="submit"
+                    class="action-button">
+
+                Save Medical Record
+
+            </button>
+
+
+            <a href="{% url 'doctor_patient_medical_records' patient.id %}"
+               class="cancel-button">
+
+                Cancel
+
+            </a>
+
+        </div>
+
+    </form>
+
+</section>
+
+
+<!-- Quick Actions -->
+
+<section class="dashboard-card"
+         style="margin-top: 25px;">
+
+    <div class="card-header">
+
+        <h2>
+            Quick Actions
+        </h2>
+
+        <span>
+            Doctor Portal
+        </span>
+
+    </div>
+
+
+    <div class="quick-actions">
+
+        <a href="{% url 'doctor_patient_medical_records' patient.id %}"
+           class="action-button">
+
+            Patient Medical Records
+
+        </a>
+
+
+        <a href="{% url 'doctor_patients' %}"
+           class="action-button">
+
+            My Patients
+
+        </a>
+
+
+        <a href="{% url 'doctor_appointments' %}"
+           class="action-button">
+
+            My Appointments
+
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

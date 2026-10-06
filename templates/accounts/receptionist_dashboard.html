@@ -1,0 +1,292 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    Medicare | Receptionist Dashboard
+{% endblock %}
+
+{% block page_title %}
+    Receptionist Dashboard
+{% endblock %}
+
+{% block content %}
+
+
+<!-- =====================================================
+     STATISTICS
+====================================================== -->
+
+<section class="stats-grid">
+
+
+    <!-- Total Patients -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            🧑‍🤝‍🧑
+        </div>
+
+        <div>
+
+            <p>
+                Total Patients
+            </p>
+
+            <h2>
+                {{ total_patients }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- Today's Appointments -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📅
+        </div>
+
+        <div>
+
+            <p>
+                Today's Appointments
+            </p>
+
+            <h2>
+                {{ today_appointments }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- Available Doctors -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            👨‍⚕️
+        </div>
+
+        <div>
+
+            <p>
+                Available Doctors
+            </p>
+
+            <h2>
+                {{ available_doctors }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- Pending Bills -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            💰
+        </div>
+
+        <div>
+
+            <p>
+                Pending Bills
+            </p>
+
+            <h2>
+                {{ pending_bills }}
+            </h2>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     DASHBOARD GRID
+====================================================== -->
+
+<section class="dashboard-grid">
+
+
+    <!-- Reception Actions -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <h2>
+                Reception Actions
+            </h2>
+
+            <span>
+                Quick Access
+            </span>
+
+        </div>
+
+
+        <div class="quick-actions">
+
+
+            <!-- Register Patient -->
+
+            <a href="{% url 'add_patient' %}"
+               class="action-button">
+
+                Register Patient
+
+            </a>
+
+
+            <!-- Book Appointment -->
+
+            <a href="{% url 'add_appointment' %}"
+               class="action-button">
+
+                Book Appointment
+
+            </a>
+
+
+            <!-- Patient Records -->
+
+            <a href="{% url 'patient_list' %}"
+               class="action-button">
+
+                Patient Records
+
+            </a>
+
+
+            <!-- Appointments -->
+
+            <a href="{% url 'appointment_list' %}"
+               class="action-button">
+
+                Manage Appointments
+
+            </a>
+
+
+            <!-- Medical Records -->
+
+            <a href="{% url 'medical_record_list' %}"
+               class="action-button">
+
+                Medical Records
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Account Information -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <h2>
+                Account Information
+            </h2>
+
+            <span>
+                Login Details
+            </span>
+
+        </div>
+
+
+        <div class="system-info">
+
+
+            <!-- Username -->
+
+            <div>
+
+                <span>
+                    Username
+                </span>
+
+                <strong>
+                    {{ request.user.username }}
+                </strong>
+
+            </div>
+
+
+            <!-- Role -->
+
+            <div>
+
+                <span>
+                    Role
+                </span>
+
+                <strong>
+                    Receptionist
+                </strong>
+
+            </div>
+
+
+            <!-- Account Status -->
+
+            <div>
+
+                <span>
+                    Account Status
+                </span>
+
+                <strong class="status-approved">
+                    Approved
+                </strong>
+
+            </div>
+
+
+            <!-- Email -->
+
+            <div>
+
+                <span>
+                    Email
+                </span>
+
+                <strong>
+                    {{ request.user.email|default:"Not provided" }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<footer class="dashboard-footer">
+
+    © 2026 Medicare Local Clinic Management System
+
+</footer>
+
+{% endblock %}
